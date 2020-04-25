@@ -13,6 +13,8 @@ const listener = app.listen(process.env.PORT, () => {
 const https = require("https");
 const agent = https.globalAgent;
 const WebSocket = require("ws");
+const Entities = require('html-entities').AllHtmlEntities;
+const entities = new Entities();
 
 //sign in once
 /**/
@@ -44,7 +46,7 @@ reqHttps("undercards.net/SignIn", process.env.LOGINBODY, headers => {
           ping: "pong"
         })
       );
-      console.log("pinged");
+      //console.log("pinged");
     }, 9000);
   });
 
@@ -54,7 +56,8 @@ reqHttps("undercards.net/SignIn", process.env.LOGINBODY, headers => {
       let chatMessage = JSON.parse(parsedData.chatMessage);
       let id = chatMessage.id;
       let user = chatMessage.user;
-      let message = chatMessage.message;
+      //decode html entities sent over
+      let message = entities.decode(chatMessage.message);
       console.log(id, user.username, message);
       let params = {
         username: user.username,
