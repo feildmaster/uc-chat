@@ -109,6 +109,15 @@ reqHttps("undercards.net/SignIn", process.env.LOGINBODY, "application/x-www-form
         ]
       };
       reqHttps(endpoint, JSON.stringify(params), "application/json; charset=UTF-8", () => {});
+    } else if (parsedData.action === 'getMessageBroadcast') {
+      const endpoint = process.env.WEBHOOK_INFO;
+      if (!endpoint) return;
+      const params = {
+        username: 'info-chan',
+        avatar_url: 'https://undercards.net/images/souls/DETERMINATION.png',
+        content: parsedData.message,
+      };
+      reqHttps(endpoint, JSON.stringify(params), "application/json; charset=UTF-8", () => {});
     }
   });
 });
