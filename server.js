@@ -11,14 +11,15 @@ const listener = app.listen(process.env.PORT, () => {
 
 //real stuff
 const https = require("https");
+var agent = https.globalAgent;
 
-reqHttps("undercards.net/SignIn", process.env.LOGINBODY, "", r =>
-  console.log(r)
-);
+reqHttps("undercards.net/SignIn", process.env.LOGINBODY, "", headers => {
+  
+});
 
 //boilerplate https post request, better to have fine control than a library
 //do NOT put https:// part of url, it expects everything after that
-function reqHttps(url, body, cookie, callback) {
+function reqHttps(url, body, callback) {
   const hostname = url.split("/")[0];
   const options = {
     hostname: hostname,
@@ -32,7 +33,7 @@ function reqHttps(url, body, cookie, callback) {
       Connection: "keep-alive",
       "Content-Type": "application/x-www-form-urlencoded; charset=UTF-8",
       "Content-Length": body ? body.length : 0,
-      Cookie: cookie,
+      //Cookie: cookie,
       Host: hostname,
       Origin: "https://" + hostname,
       Referer: "https://" + hostname,
@@ -43,13 +44,14 @@ function reqHttps(url, body, cookie, callback) {
   const req = https.request(options, res => {
     console.log("statusCode:", res.statusCode);
     console.log("headers:", res.headers);
-    let total = "";
+    callback(res.headers);
+    /*let total = "";
     res.on("data", d => {
       total += d;
     });
     res.on("end", () => {
       callback ? callback(total) : null;
-    });
+    });*/
   });
   req.on("error", console.error.bind(console));
   if (body) req.write(body);
