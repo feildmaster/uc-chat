@@ -69,7 +69,8 @@ reqHttps("undercards.net/SignIn", process.env.LOGINBODY, "application/x-www-form
               name: user.username,
               icon_url: 'https://undercards.net/images/avatars/'+ user.avatar.image + '.' + user.avatar.extension
             },
-            description: message
+            description: message,
+            color: parseInt('0091ff', 16) //blue
           }
         ]
       };
