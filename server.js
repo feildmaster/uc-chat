@@ -17,11 +17,11 @@ const entities = new Entities();
 
 const endpoints = {
   'chat-discussion': process.env.WEBHOOKURL,
-  'chat-strategy': null,
-  'chat-beginner': null,
-  'chat-tournament': null,
-  'chat-roleplay': null,
-  'chat-support': null,
+  'chat-strategy': process.env.WEBHOOK_STRATEGY,
+  'chat-beginner': process.env.WEBHOOK_BEGINNER,
+  'chat-tournament': process.env.WEBHOOK_TOURNEY,
+  'chat-roleplay': process.env.WEBHOOK_RP,
+  'chat-support': process.env.WEBHOOK_SUPPORT,
 };
 
 const ranks = [
