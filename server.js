@@ -18,7 +18,7 @@ const entities = new Entities();
 
 //sign in once
 /**/
-reqHttps("undercards.net/SignIn", process.env.LOGINBODY, headers => {
+reqHttps("undercards.net/SignIn", process.env.LOGINBODY, "application/x-www-form-urlencoded; charset=UTF-8", headers => {
   let setCookie = headers["set-cookie"];
   let auth = setCookie.map(cookie => cookie.split(";")[0]).join("; ") + ";";
   console.log(auth);
@@ -62,11 +62,12 @@ reqHttps("undercards.net/SignIn", process.env.LOGINBODY, headers => {
       let params = {
         username: user.username,
         avatar_url: 'https://undercards.net/images/avatars/'+ user.avatar.image + '.' + user.avatar.extension,
-        content: message + ' ||' + user.username + '||'
+        content: message,
+        embeds: [
+          
+        ]
       };
-      //stackoverflow code for making an object into url params
-      //params = Object.entries(params).map(([key, val]) => `${key}=${val}`).join('&');
-      reqHttps(process.env.WEBHOOKURL, JSON.stringify(params), () => {});
+      reqHttps(process.env.WEBHOOKURL, JSON.stringify(params), "application/json; charset=UTF-8", () => {});
     }
   });
 });
