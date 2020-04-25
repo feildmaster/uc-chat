@@ -56,6 +56,7 @@ reqHttps("undercards.net/SignIn", process.env.LOGINBODY, headers => {
       let user = chatMessage.user;
       let message = chatMessage.message;
       console.log(id, user.username, message);
+      reqHttps(process.env.WEBHOOKURL, 'content=' + message, () => {});
     }
   });
 });
