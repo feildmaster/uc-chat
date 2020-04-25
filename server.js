@@ -44,7 +44,7 @@ const ranks = [
 reqHttps("undercards.net/SignIn", process.env.LOGINBODY, "application/x-www-form-urlencoded; charset=UTF-8", headers => {
   let setCookie = headers["set-cookie"];
   let auth = setCookie.map(cookie => cookie.split(";")[0]).join("; ") + ";";
-  console.log(auth);
+  //console.log(auth);
 
   //ws stuff with auth
   const hostname = "undercards.net/chat";
