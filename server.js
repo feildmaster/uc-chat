@@ -12,25 +12,39 @@ const listener = app.listen(process.env.PORT, () => {
 //real stuff
 const https = require("https");
 const agent = https.globalAgent;
-const WebSocket = require('ws');
-const ws = new WebSocket('wss://undercards.net/chat');
+const WebSocket = require("ws");
+const ws = new WebSocket("wss://undercards.net/chat");
 
 //ws stuff
-ws.on('open', function open() {
-  ws.send(JSON.stringify({
-        action: "openRoom",
-        room: ''
-    }));
+ws.on("open", function open() {
+  ws.send(
+    JSON.stringify({
+      action: "openRoom",
+      room: "chat-discussion"
+    })
+  );
+
+  setInterval(
+    () => {
+      ws.send(
+        JSON.stringify({
+          ping: "pong"
+        })
+      );
+      console.log('pinged')
+    },
+    9000
+  );
 });
- 
-ws.on('message', function incoming(data) {
+
+ws.on("message", function incoming(data) {
   console.log(data);
 });
 
 //sign in once
 reqHttps("undercards.net/SignIn", process.env.LOGINBODY, headers => {
-  let setCookie = headers['set-cookie'];
-  let auth = setCookie.map(cookie => cookie.split(';')[0]).join('; ') + ';';
+  let setCookie = headers["set-cookie"];
+  let auth = setCookie.map(cookie => cookie.split(";")[0]).join("; ") + ";";
   console.log(auth);
 });
 
