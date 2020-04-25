@@ -15,7 +15,7 @@ const agent = https.globalAgent;
 const WebSocket = require("ws");
 
 //sign in once
-/**
+/**/
 reqHttps("undercards.net/SignIn", process.env.LOGINBODY, headers => {
   let setCookie = headers["set-cookie"];
   let auth = setCookie.map(cookie => cookie.split(";")[0]).join("; ") + ";";
@@ -33,10 +33,10 @@ reqHttps("undercards.net/SignIn", process.env.LOGINBODY, headers => {
         "Mozilla/5.0 (Windows NT 6.1; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/70.0.3538.110 Safari/537.36"
     }
   };
-  const ws = new WebSocket("wss://undercards.net/chat", [], options);
+  const ws = new WebSocket("wss://undercards.net/chat", options);
   //ws stuff
   ws.on("open", function open() {
-    ws.send(
+    /*ws.send(
       JSON.stringify({
         action: "openRoom",
         room: "chat-discussion"
@@ -50,7 +50,7 @@ reqHttps("undercards.net/SignIn", process.env.LOGINBODY, headers => {
         })
       );
       console.log("pinged");
-    }, 9000);
+    }, 9000);*/
   });
 
   ws.on("message", function incoming(data) {
