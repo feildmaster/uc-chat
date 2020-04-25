@@ -50,8 +50,13 @@ reqHttps("undercards.net/SignIn", process.env.LOGINBODY, headers => {
 
   ws.on("message", function incoming(data) {
     let parsedData = JSON.parse(data);
-    if (!chatMessage) return;
-    console.log(JSON.parse(chatMessage));
+    if (parsedData.action === 'getMessage') {
+      let chatMessage = JSON.parse(parsedData.chatMessage);
+      let id = chatMessage.id;
+      let user = chatMessage.user;
+      let message = chatMessage.message;
+      console.log(id, user.username, message);
+    }
   });
 });
 //*/
