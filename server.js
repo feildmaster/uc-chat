@@ -34,8 +34,9 @@ const ranks = [
   '00ceff', // Designer
   '7355ff', // Artist
   '43ec94', // Tester
-  'ffd700', // Unused? Wait, is this contributor?
-  '0091ff', // Default //should I restart the server to test what's been done - sure. (f)
+  'ffd700', // Unused
+  '0091ff', // Default
+  'ffd700', // Contributor
 ];
 
 //sign in once
@@ -56,9 +57,8 @@ reqHttps("undercards.net/SignIn", process.env.LOGINBODY, "application/x-www-form
   //ws stuff
   ws.on("open", function open() {
     // Join rooms we care about
-    Object.keys(endpoints).forEach((e) => {
-      const room = endpoints[e];
-      if (!room) return;
+    Object.keys(endpoints).forEach((room) => {
+      if (!endpoints[room]) return;
       ws.send(JSON.stringify({
         room,
         action: "openRoom",
@@ -77,15 +77,15 @@ reqHttps("undercards.net/SignIn", process.env.LOGINBODY, "application/x-www-form
   
   //if the server goes down restart the app for new auth
   ws.on("close", function socketClosed() {
-    process.exit();
+    //process.exit();
   });
 
   ws.on("message", function incoming(data) {
     let parsedData = JSON.parse(data);
+    // console.log(parsedData) //I'm only getting self infos, nothing else
     if (parsedData.action === 'getMessage') {
       const room = parsedData.room;
       const endpoint = endpoints[room];
-      console.log(room, endpoints[room])
       if (!endpoint) return; // This is just a fail-safe
       let chatMessage = JSON.parse(parsedData.chatMessage);
       let id = chatMessage.id;
