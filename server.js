@@ -60,11 +60,17 @@ reqHttps("undercards.net/SignIn", process.env.LOGINBODY, "application/x-www-form
       let message = entities.decode(chatMessage.message);
       //console.log(id, user.username, message);
       let params = {
-        username: user.username,
-        avatar_url: 'https://undercards.net/images/avatars/'+ user.avatar.image + '.' + user.avatar.extension,
-        content: message,
+        username: 'chat-discussion webhook',
+        avatar_url: 'https://undercards.net/images/souls/DETERMINATION.png',
+        //content: message,
         embeds: [
-          
+          {
+            author: {
+              name: user.username,
+              icon_url: 'https://undercards.net/images/avatars/'+ user.avatar.image + '.' + user.avatar.extension
+            },
+            description: message
+          }
         ]
       };
       reqHttps(process.env.WEBHOOKURL, JSON.stringify(params), "application/json; charset=UTF-8", () => {});
