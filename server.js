@@ -11,7 +11,6 @@ const listener = app.listen(process.env.PORT, () => {
 
 //real stuff
 const https = require("https");
-const agent = https.globalAgent;
 const WebSocket = require("ws");
 const Entities = require('html-entities').AllHtmlEntities;
 const entities = new Entities();
@@ -42,19 +41,23 @@ reqHttps("undercards.net/SignIn", process.env.LOGINBODY, "application/x-www-form
   const ws = new WebSocket("wss://undercards.net/chat", options);
   //ws stuff
   ws.on("open", function open() {
-    ws.send(
-      JSON.stringify({
+    // Join rooms we care about
+    Object.keys(endpoints).forEach((e) => {
+      const room = endpoints[e];
+      if (!room) return;
+      ws.send(JSON.stringify({
+        room,
         action: "openRoom",
-        room: "chat-discussion"
-      })
-    );
+      }));
+    });
 
     setInterval(() => {
       ws.send(
         JSON.stringify({
           ping: "pong"
         })
-      );
+      ); //unfortunately the logs were being spammed with the latest chat messages so
+      // the
       //console.log("pinged");
     }, 9000);
   });
@@ -62,6 +65,9 @@ reqHttps("undercards.net/SignIn", process.env.LOGINBODY, "application/x-www-form
   ws.on("message", function incoming(data) {
     let parsedData = JSON.parse(data);
     if (parsedData.action === 'getMessage') {
+      const room = parsedData.room;
+      const endpoint = endpoints[room];
+      if (!endpoint) return; // This is just a fail-safe
       let chatMessage = JSON.parse(parsedData.chatMessage);
       let id = chatMessage.id;
       let user = chatMessage.user;
@@ -69,7 +75,7 @@ reqHttps("undercards.net/SignIn", process.env.LOGINBODY, "application/x-www-form
       let message = entities.decode(chatMessage.message);
       //console.log(id, user.username, message);
       let params = {
-        username: 'chat-discussion webhook',
+        username: `${room} webhook`,
         avatar_url: 'https://undercards.net/images/souls/DETERMINATION.png',
         //content: message,
         embeds: [
@@ -83,7 +89,7 @@ reqHttps("undercards.net/SignIn", process.env.LOGINBODY, "application/x-www-form
           }
         ]
       };
-      reqHttps(process.env.WEBHOOKURL, JSON.stringify(params), "application/json; charset=UTF-8", () => {});
+      reqHttps(endpoint, JSON.stringify(params), "application/json; charset=UTF-8", () => {});
     }
   });
 });
