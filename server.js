@@ -65,8 +65,8 @@ reqHttps("undercards.net/SignIn", process.env.LOGINBODY, headers => {
         content: message + ' ||' + user.username + '||'
       };
       //stackoverflow code for making an object into url params
-      params = Object.entries(params).map(([key, val]) => `${key}=${val}`).join('&');
-      reqHttps(process.env.WEBHOOKURL, params, () => {});
+      //params = Object.entries(params).map(([key, val]) => `${key}=${val}`).join('&');
+      reqHttps(process.env.WEBHOOKURL, JSON.stringify(params), () => {});
     }
   });
 });
@@ -74,7 +74,7 @@ reqHttps("undercards.net/SignIn", process.env.LOGINBODY, headers => {
 
 //boilerplate https post request, better to have fine control than a library
 //do NOT put https:// part of url, it expects everything after that
-function reqHttps(url, body, callback) {
+function reqHttps(url, body, type, callback) {
   const hostname = url.split("/")[0];
   const options = {
     hostname: hostname,
@@ -86,7 +86,7 @@ function reqHttps(url, body, callback) {
       "Accept-Encoding": "gzip, deflate, br",
       "Accept-Language": "en-US,en;q=0.9,es;q=0.8",
       Connection: "keep-alive",
-      "Content-Type": "application/x-www-form-urlencoded; charset=UTF-8",
+      "Content-Type": type,
       "Content-Length": body ? body.length : 0,
       //Cookie: cookie,
       Host: hostname,
