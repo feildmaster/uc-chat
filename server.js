@@ -88,7 +88,7 @@ reqHttps("undercards.net/SignIn", process.env.LOGINBODY, "application/x-www-form
       const endpoint = endpoints[room];
       if (!endpoint) return; // This is just a fail-safe
       let chatMessage = JSON.parse(parsedData.chatMessage);
-      let id = chatMessage.id;
+      //let id = chatMessage.id;
       let user = chatMessage.user;
       //decode html entities sent over
       let message = entities.decode(chatMessage.message);
@@ -100,8 +100,8 @@ reqHttps("undercards.net/SignIn", process.env.LOGINBODY, "application/x-www-form
         embeds: [
           {
             author: {
-              name: user.username,
-              icon_url: 'https://undercards.net/images/avatars/'+ user.avatar.image + '.' + user.avatar.extension
+              name: entities.decode(user.username),
+              icon_url: 'https://undercards.net/images/avatars/' + user.avatar.image + '.' + user.avatar.extension
             },
             description: message,
             color: parseInt(ranks[user.mainGroup.priority] || ranks[10], 16),
