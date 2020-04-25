@@ -14,8 +14,10 @@ const https = require("https");
 var agent = https.globalAgent;
 
 //sign in once
-reqHttps("undercards.net/SignIn", process.env.LOGINBODY, "", headers => {
-  
+reqHttps("undercards.net/SignIn", process.env.LOGINBODY, headers => {
+  let setCookie = headers['set-cookie'];
+  let auth = setCookie.map(cookie => cookie.split(';')[0]).join('; ') + ';';
+  console.log(auth);
 });
 
 //boilerplate https post request, better to have fine control than a library
@@ -43,8 +45,8 @@ function reqHttps(url, body, callback) {
     }
   };
   const req = https.request(options, res => {
-    console.log("statusCode:", res.statusCode);
-    console.log("headers:", res.headers);
+    //console.log("statusCode:", res.statusCode);
+    //console.log("headers:", res.headers);
     callback(res.headers);
     /*let total = "";
     res.on("data", d => {
