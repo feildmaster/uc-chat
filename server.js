@@ -14,53 +14,18 @@ const https = require("https");
 const agent = https.globalAgent;
 const WebSocket = require("ws");
 
-//ws stuff
-ws.on("open", function open() {
-  ws.send(
-    JSON.stringify({
-      action: "openRoom",
-      room: "chat-discussion"
-    })
-  );
-
-  setInterval(
-    () => {
-      ws.send(
-        JSON.stringify({
-          ping: "pong"
-        })
-      );
-      console.log('pinged')
-    },
-    9000
-  );
-});
-
-ws.on("message", function incoming(data) {
-  console.log(data);
-});
-
 //sign in once
+/**
 reqHttps("undercards.net/SignIn", process.env.LOGINBODY, headers => {
   let setCookie = headers["set-cookie"];
   let auth = setCookie.map(cookie => cookie.split(";")[0]).join("; ") + ";";
   console.log(auth);
-  
-  //ws stuff
+
+  //ws stuff with auth
   const hostname = "undercards.net/chat";
   const options = {
-    hostname: hostname,
-    port: 443,
-    path: encodeURI(url.slice(url.indexOf("/"))),
-    method: "POST",
     headers: {
-      Accept: "*/*",
-      "Accept-Encoding": "gzip, deflate, br",
-      "Accept-Language": "en-US,en;q=0.9,es;q=0.8",
-      Connection: "keep-alive",
-      "Content-Type": "application/x-www-form-urlencoded; charset=UTF-8",
-      "Content-Length": 0,
-      //Cookie: cookie,
+      Cookie: auth,
       Host: hostname,
       Origin: "https://" + hostname,
       Referer: "https://" + hostname,
@@ -69,7 +34,30 @@ reqHttps("undercards.net/SignIn", process.env.LOGINBODY, headers => {
     }
   };
   const ws = new WebSocket("wss://undercards.net/chat", [], options);
+  //ws stuff
+  ws.on("open", function open() {
+    ws.send(
+      JSON.stringify({
+        action: "openRoom",
+        room: "chat-discussion"
+      })
+    );
+
+    setInterval(() => {
+      ws.send(
+        JSON.stringify({
+          ping: "pong"
+        })
+      );
+      console.log("pinged");
+    }, 9000);
+  });
+
+  ws.on("message", function incoming(data) {
+    console.log(data);
+  });
 });
+//*/
 
 //boilerplate https post request, better to have fine control than a library
 //do NOT put https:// part of url, it expects everything after that
