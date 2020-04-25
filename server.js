@@ -25,16 +25,17 @@ const endpoints = {
 };
 
 const ranks = [
+  '', // Blank
   'ff0000', // Admin
   'fca500', // Coordinator
   '00cc00', // Moderator
-  '', // Supporter
-  '', // Balancer
-  '', // Designer
-  '', // Artist
-  '', // Tester
-  '', // Unused
-  '', // Default
+  '41fcff', // Supporter
+  'd535d9', // Balancer
+  '00ceff', // Designer
+  '7355ff', // Artist
+  '43ec94', // Tester
+  'ffd700', // Unused? Wait, is this contributor?
+  '0091ff', // Default //should I restart the server to test what's been done - sure. (f)
 ];
 
 //sign in once
@@ -84,6 +85,7 @@ reqHttps("undercards.net/SignIn", process.env.LOGINBODY, "application/x-www-form
     if (parsedData.action === 'getMessage') {
       const room = parsedData.room;
       const endpoint = endpoints[room];
+      console.log(room, endpoints[room])
       if (!endpoint) return; // This is just a fail-safe
       let chatMessage = JSON.parse(parsedData.chatMessage);
       let id = chatMessage.id;
@@ -102,7 +104,7 @@ reqHttps("undercards.net/SignIn", process.env.LOGINBODY, "application/x-www-form
               icon_url: 'https://undercards.net/images/avatars/'+ user.avatar.image + '.' + user.avatar.extension
             },
             description: message,
-            color: parseInt(ranks[user.SOMETHING], 16) //blue
+            color: parseInt(ranks[user.mainGroup.priority] || ranks[ranks.length - 1], 16),
           }
         ]
       };
