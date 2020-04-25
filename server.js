@@ -24,6 +24,19 @@ const endpoints = {
   'chat-support': null,
 };
 
+const ranks = [
+  'ff0000', // Admin
+  'fca500', // Coordinator
+  '00cc00', // Moderator
+  '', // Supporter
+  '', // Balancer
+  '', // Designer
+  '', // Artist
+  '', // Tester
+  '', // Unused
+  '', // Default
+];
+
 //sign in once
 /**/
 reqHttps("undercards.net/SignIn", process.env.LOGINBODY, "application/x-www-form-urlencoded; charset=UTF-8", headers => {
@@ -56,10 +69,14 @@ reqHttps("undercards.net/SignIn", process.env.LOGINBODY, "application/x-www-form
         JSON.stringify({
           ping: "pong"
         })
-      ); //unfortunately the logs were being spammed with the latest chat messages so
-      // the
+      );
       //console.log("pinged");
     }, 9000);
+  });
+  
+  //if the server goes down restart the app for new auth
+  ws.on("close", function socketClosed() {
+    process.exit();
   });
 
   ws.on("message", function incoming(data) {
@@ -85,7 +102,7 @@ reqHttps("undercards.net/SignIn", process.env.LOGINBODY, "application/x-www-form
               icon_url: 'https://undercards.net/images/avatars/'+ user.avatar.image + '.' + user.avatar.extension
             },
             description: message,
-            color: parseInt('0091ff', 16) //blue
+            color: parseInt(ranks[user.SOMETHING], 16) //blue
           }
         ]
       };
