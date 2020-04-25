@@ -58,7 +58,7 @@ reqHttps("undercards.net/SignIn", process.env.LOGINBODY, headers => {
       let user = chatMessage.user;
       //decode html entities sent over
       let message = entities.decode(chatMessage.message);
-      console.log(id, user.username, message);
+      //console.log(id, user.username, message);
       let params = {
         username: user.username,
         avatar_url: 'https://undercards.net/images/avatars/'+ user.avatar.image + '.' + user.avatar.extension,
