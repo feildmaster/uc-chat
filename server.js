@@ -56,7 +56,14 @@ reqHttps("undercards.net/SignIn", process.env.LOGINBODY, headers => {
       let user = chatMessage.user;
       let message = chatMessage.message;
       console.log(id, user.username, message);
-      reqHttps(process.env.WEBHOOKURL, 'content=' + message, () => {});
+      let params = {
+        username: user.username,
+        avatar_url: "",
+        content: message
+      };
+      //stackoverflow code for making an object into url params
+      params = Object.entries(params).map(([key, val]) => `${key}=${val}`).join('&');
+      reqHttps(process.env.WEBHOOKURL, params, () => {});
     }
   });
 });
