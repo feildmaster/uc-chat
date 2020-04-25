@@ -16,6 +16,15 @@ const WebSocket = require("ws");
 const Entities = require('html-entities').AllHtmlEntities;
 const entities = new Entities();
 
+const endpoints = {
+  'chat-discussion': process.env.WEBHOOKURL,
+  'chat-strategy': null,
+  'chat-beginner': null,
+  'chat-tournament': null,
+  'chat-roleplay': null,
+  'chat-support': null,
+};
+
 //sign in once
 /**/
 reqHttps("undercards.net/SignIn", process.env.LOGINBODY, "application/x-www-form-urlencoded; charset=UTF-8", headers => {
