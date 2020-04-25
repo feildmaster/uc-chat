@@ -13,6 +13,7 @@ const listener = app.listen(process.env.PORT, () => {
 const https = require("https");
 var agent = https.globalAgent;
 
+//sign in once
 reqHttps("undercards.net/SignIn", process.env.LOGINBODY, "", headers => {
   
 });
