@@ -58,7 +58,7 @@ reqHttps("undercards.net/SignIn", process.env.LOGINBODY, headers => {
       console.log(id, user.username, message);
       let params = {
         username: user.username,
-        avatar_url: "",
+        avatar_url: 'https://undercards.net/images/avatars/'+ user.avatar.image + '.' + user.avatar.extension,
         content: message
       };
       //stackoverflow code for making an object into url params
