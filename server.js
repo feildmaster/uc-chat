@@ -34,7 +34,7 @@ const ranks = [
   '00ceff', // Designer
   '7355ff', // Artist
   '43ec94', // Tester
-  'ffd700', // Unused
+  '', // Unused
   '0091ff', // Default
   'ffd700', // Contributor
 ];
@@ -77,7 +77,7 @@ reqHttps("undercards.net/SignIn", process.env.LOGINBODY, "application/x-www-form
   
   //if the server goes down restart the app for new auth
   ws.on("close", function socketClosed() {
-    //process.exit();
+    process.exit();
   });
 
   ws.on("message", function incoming(data) {
@@ -104,7 +104,7 @@ reqHttps("undercards.net/SignIn", process.env.LOGINBODY, "application/x-www-form
               icon_url: 'https://undercards.net/images/avatars/'+ user.avatar.image + '.' + user.avatar.extension
             },
             description: message,
-            color: parseInt(ranks[user.mainGroup.priority] || ranks[ranks.length - 1], 16),
+            color: parseInt(ranks[user.mainGroup.priority] || ranks[10], 16),
           }
         ]
       };
