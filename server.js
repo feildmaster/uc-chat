@@ -49,6 +49,8 @@ const autoTemplates = {
   },
 };
 
+const specialCharacters = /[`]/g;
+
 const ranks = [
   '', // Blank
   'ff0000', // Admin
@@ -118,6 +120,7 @@ reqHttps("undercards.net/SignIn", process.env.LOGINBODY, "application/x-www-form
       let user = chatMessage.user;
       //decode html entities sent over
       let message = entities.decode(chatMessage.message);
+      let messageNoEmotes, emotes = parseMessageEmotes(message);
       //console.log(id, user.username, message);
       let params = {
         username: `${room} webhook`,
