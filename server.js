@@ -118,7 +118,7 @@ reqHttps("undercards.net/SignIn", process.env.LOGINBODY, "application/x-www-form
         content: parsedData.message,
       };
       reqHttps(endpoint, JSON.stringify(params), "application/json; charset=UTF-8", () => {});
-    }
+    } else if (parsedData.action === 'getMessageAuto') {}
   });
 });
 //*/
