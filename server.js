@@ -118,10 +118,8 @@ reqHttps("undercards.net/SignIn", process.env.LOGINBODY, "application/x-www-form
       let chatMessage = JSON.parse(parsedData.chatMessage);
       //let id = chatMessage.id;
       let user = chatMessage.user;
-      //decode html entities sent over
-      let message = entities.decode(chatMessage.message);
-      //emotes is an array of emote image urls
-      let [messageNoEmotes, emotes] = parseMessageEmotes(message);
+      //decode html entities sent over and fit to discord
+      let message = entities.decode(parseMessageEmotes(chatMessage.message)).replace(specialCharacters, '\\$1');
       //console.log(id, user.username, message);
       let params = {
         username: `${room} webhook`,
@@ -133,7 +131,7 @@ reqHttps("undercards.net/SignIn", process.env.LOGINBODY, "application/x-www-form
               name: entities.decode(user.username),
               icon_url: 'https://undercards.net/images/avatars/' + user.avatar.image + '.' + user.avatar.extension
             },
-            description: messageNoEmotes.replace(specialCharacters, '\\$1'),
+            description: message,
             color: parseInt(ranks[user.mainGroup.priority] || ranks[10], 16),
             footer: {
               text: user.id,
@@ -216,11 +214,9 @@ function reqHttps(url, body, type, callback) {
 function parseMessageEmotes(message) {
   //images are displayed to the web browser as <img src="images/emotes/Disturbed_Burger_Pants.png" />
   let emoteRegex = /<img src="images\/emotes\/.*" \/>/g;
-  let emotes = [];
-  message.replace(emoteRegex, match => {
-    let emoteUrl = 'https://undercards.net/' + match.slice('<img src="'.length, -1 * '" />'.length)
-    emotes.push(emoteUrl);
+  let parsedMessage = message.replace(emoteRegex, match => {
+    
   });
-  console.log(emotes);
-  return [message.replace(emoteRegex, ''), emotes];
+  console.log(parsedMessage);
+  return parsedMessage;
 }
