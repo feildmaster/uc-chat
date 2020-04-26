@@ -146,6 +146,7 @@ reqHttps("undercards.net/SignIn", process.env.LOGINBODY, "application/x-www-form
     } else if (parsedData.action === 'getMessageAuto') {
       const message = JSON.parse(parsedData.message);
       const template = autoTemplates[message[0]];
+      console.log(message, template);
       if (!template || !template.hook) return;
       const params = {
         username: `${template.title} webhook`,
