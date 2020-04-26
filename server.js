@@ -120,6 +120,7 @@ reqHttps("undercards.net/SignIn", process.env.LOGINBODY, "application/x-www-form
       let user = chatMessage.user;
       //decode html entities sent over
       let message = entities.decode(chatMessage.message);
+      //emotes is an array of emote image urls
       let [messageNoEmotes, emotes] = parseMessageEmotes(message);
       //console.log(id, user.username, message);
       let params = {
@@ -215,6 +216,11 @@ function reqHttps(url, body, type, callback) {
 function parseMessageEmotes(message) {
   //images are displayed to the web browser as <img src="images/emotes/Disturbed_Burger_Pants.png" />
   let emoteRegex = /<img src="images\/emotes\/.*" \/>/g;
-  message.search(emoteRegex)
-  return [message, message];
+  let emotes = [];
+  message.replace(emoteRegex, match => {
+    let emoteUrl = 'https://undercards.net/' + match.slice('<img src="'.length, -1 * '" />'.length)
+    emotes.push(emoteUrl);
+  });
+  console.log(emotes);
+  return [message.replace(emoteRegex, ''), emotes];
 }
