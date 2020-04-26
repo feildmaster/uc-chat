@@ -130,6 +130,9 @@ reqHttps("undercards.net/SignIn", process.env.LOGINBODY, "application/x-www-form
             },
             description: message,
             color: parseInt(ranks[user.mainGroup.priority] || ranks[10], 16),
+            footer: {
+              text: user.id,
+            },
           }
         ]
       };
@@ -144,9 +147,8 @@ reqHttps("undercards.net/SignIn", process.env.LOGINBODY, "application/x-www-form
       };
       reqHttps(endpoint, JSON.stringify(params), "application/json; charset=UTF-8", () => {});
     } else if (parsedData.action === 'getMessageAuto') {
-      const message = JSON.parse(parsedData.message);
+      const message = JSON.parse(JSON.parse(parsedData.message).args);
       const template = autoTemplates[message[0]];
-      console.log(message, template);
       if (!template || !template.hook) return;
       const params = {
         username: `${template.title} webhook`,
