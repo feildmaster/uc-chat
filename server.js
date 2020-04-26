@@ -129,7 +129,7 @@ reqHttps("undercards.net/SignIn", process.env.LOGINBODY, "application/x-www-form
               name: entities.decode(user.username),
               icon_url: 'https://undercards.net/images/avatars/' + user.avatar.image + '.' + user.avatar.extension
             },
-            description: message,
+            description: '```' + message + '```',
             color: parseInt(ranks[user.mainGroup.priority] || ranks[10], 16),
             footer: {
               text: user.id,
