@@ -190,7 +190,7 @@ function reqHttps(url, body, type, callback) {
     //console.log("statusCode:", res.statusCode);
     //console.log("headers:", res.headers);
     if (callback) {
-      if (res.statusCode === 404) {
+      if (res.statusCode !== 302 && res.statusCode !== 200) { // Redirect to quests
         console.error('Server unavailable');
         process.exit();
       }
