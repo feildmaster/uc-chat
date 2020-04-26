@@ -24,22 +24,24 @@ const endpoints = {
   'chat-support': process.env.WEBHOOK_SUPPORT,
 };
 
+const templateRegex = /\$(\d+)/g;
+
 const autoTemplates = {
   'chat-legendary-notification': {
     hook: process.env.WEBHOOK_LEGEND,
-    template: '',
+    template: '$1 has just obtained $2!',
   },
   'chat-legendary-shiny-notification': {
     hook: process.env.WEBHOOK_LEGEND,
-    template: '',
+    template: '$1 has just obtained Shiny $2!',
   },
   'chat-user-ws': {
     hook: process.env.WEBHOOK_WS,
-    template: '',
+    template: '$1 is on a $2 game winning streak!',
   },
   'chat-user-ws-stop': {
     hook: process.env.WEBHOOK_WS,
-    template: '',
+    template: `$1 has just stopped $2's $3 game winning streak!`,
   },
 };
 
@@ -137,7 +139,9 @@ reqHttps("undercards.net/SignIn", process.env.LOGINBODY, "application/x-www-form
         content: parsedData.message,
       };
       reqHttps(endpoint, JSON.stringify(params), "application/json; charset=UTF-8", () => {});
-    } else if (parsedData.action === 'getMessageAuto') {}
+    } else if (parsedData.action === 'getMessageAuto') {
+      const message = JSON.parse();
+    }
   });
 });
 //*/
