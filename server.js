@@ -24,6 +24,25 @@ const endpoints = {
   'chat-support': process.env.WEBHOOK_SUPPORT,
 };
 
+const autoTemplates = {
+  'chat-legendary-notification': {
+    hook: process.env.WEBHOOK_LEGEND,
+    template: '',
+  },
+  'chat-legendary-shiny-notification': {
+    hook: process.env.WEBHOOK_LEGEND,
+    template: '',
+  },
+  'chat-user-ws': {
+    hook: process.env.WEBHOOK_WS,
+    template: '',
+  },
+  'chat-user-ws-stop': {
+    hook: process.env.WEBHOOK_WS,
+    template: '',
+  },
+};
+
 const ranks = [
   '', // Blank
   'ff0000', // Admin
