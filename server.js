@@ -49,7 +49,7 @@ const autoTemplates = {
   },
 };
 
-const specialCharacters = /[`]/g;
+const specialCharacters = /([`|*_~>])/g;
 
 const ranks = [
   '', // Blank
@@ -120,7 +120,7 @@ reqHttps("undercards.net/SignIn", process.env.LOGINBODY, "application/x-www-form
       let user = chatMessage.user;
       //decode html entities sent over
       let message = entities.decode(chatMessage.message);
-      let messageNoEmotes, emotes = parseMessageEmotes(message);
+      let [messageNoEmotes, emotes] = parseMessageEmotes(message);
       //console.log(id, user.username, message);
       let params = {
         username: `${room} webhook`,
@@ -132,7 +132,7 @@ reqHttps("undercards.net/SignIn", process.env.LOGINBODY, "application/x-www-form
               name: entities.decode(user.username),
               icon_url: 'https://undercards.net/images/avatars/' + user.avatar.image + '.' + user.avatar.extension
             },
-            description: '```' + message + '```',
+            description: messageNoEmotes.replace(specialCharacters, '\\$1'),
             color: parseInt(ranks[user.mainGroup.priority] || ranks[10], 16),
             footer: {
               text: user.id,
@@ -210,4 +210,9 @@ function reqHttps(url, body, type, callback) {
   //req.on("error", console.error.bind(console));
   if (body) req.write(body);
   req.end();
+}
+
+function parseMessageEmotes(message) {
+  // TODO
+  return [message, message];
 }
