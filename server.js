@@ -49,7 +49,7 @@ const autoTemplates = {
   },
 };
 
-const specialCharacters = /([`|*_~>])/g;
+const specialCharacters = /([`|*_~]|^>)/g;
 
 const ranks = [
   '', // Blank
@@ -214,6 +214,7 @@ function reqHttps(url, body, type, callback) {
 
 function parseMessageEmotes(message) {
   //images are displayed to the web browser as <img src="images/emotes/Disturbed_Burger_Pants.png" />
-  
+  let emoteRegex = /<img src="images\/emotes\/.*" \/>/g;
+  message.search(emoteRegex)
   return [message, message];
 }
