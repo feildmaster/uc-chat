@@ -29,18 +29,22 @@ const templateRegex = /\$(\d+)/g;
 const autoTemplates = {
   'chat-legendary-notification': {
     hook: process.env.WEBHOOK_LEGEND,
+    title: 'Legendary draw',
     template: '$1 has just obtained $2!',
   },
   'chat-legendary-shiny-notification': {
     hook: process.env.WEBHOOK_LEGEND,
+    title: 'Legendary draw',
     template: '$1 has just obtained Shiny $2!',
   },
   'chat-user-ws': {
     hook: process.env.WEBHOOK_WS,
+    title: 'Win streak',
     template: '$1 is on a $2 game winning streak!',
   },
   'chat-user-ws-stop': {
     hook: process.env.WEBHOOK_WS,
+    title: 'Win streak',
     template: `$1 has just stopped $2's $3 game winning streak!`,
   },
 };
@@ -140,7 +144,15 @@ reqHttps("undercards.net/SignIn", process.env.LOGINBODY, "application/x-www-form
       };
       reqHttps(endpoint, JSON.stringify(params), "application/json; charset=UTF-8", () => {});
     } else if (parsedData.action === 'getMessageAuto') {
-      const message = JSON.parse();
+      const message = JSON.parse(parsedData.message);
+      const template = autoTemplates[message[0]];
+      if (!template || !template.hook) return;
+      const params = {
+        username: `${template.title} webhook`,
+        avatar_url: 'https://undercards.net/images/souls/DETERMINATION.png',
+        content: template.template.replace(templateRegex, (m, key) => message.hasOwnProperty(key) ? message[key] : ""),
+      };
+      reqHttps(template.hook, JSON.stringify(params), "application/json; charset=UTF-8", () => {});
     }
   });
 });
