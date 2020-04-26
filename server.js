@@ -108,7 +108,7 @@ reqHttps("undercards.net/SignIn", process.env.LOGINBODY, "application/x-www-form
 
   ws.on("message", function incoming(data) {
     let parsedData = JSON.parse(data);
-    // console.log(parsedData) //I'm only getting self infos, nothing else
+    // console.log(parsedData)
     if (parsedData.action === 'getMessage') {
       const room = parsedData.room;
       const endpoint = endpoints[room];
@@ -137,7 +137,7 @@ reqHttps("undercards.net/SignIn", process.env.LOGINBODY, "application/x-www-form
           }
         ]
       };
-      reqHttps(endpoint, JSON.stringify(params), "application/json; charset=UTF-8", () => {});
+      reqHttps(endpoint, JSON.stringify(params), "application/json; charset=UTF-8");
     } else if (parsedData.action === 'getMessageBroadcast') {
       const endpoint = process.env.WEBHOOK_INFO;
       if (!endpoint) return;
@@ -146,7 +146,7 @@ reqHttps("undercards.net/SignIn", process.env.LOGINBODY, "application/x-www-form
         avatar_url: 'https://undercards.net/images/souls/DETERMINATION.png',
         content: parsedData.message,
       };
-      reqHttps(endpoint, JSON.stringify(params), "application/json; charset=UTF-8", () => {});
+      reqHttps(endpoint, JSON.stringify(params), "application/json; charset=UTF-8");
     } else if (parsedData.action === 'getMessageAuto') {
       const message = JSON.parse(JSON.parse(parsedData.message).args);
       const template = autoTemplates[message[0]];
@@ -156,7 +156,7 @@ reqHttps("undercards.net/SignIn", process.env.LOGINBODY, "application/x-www-form
         avatar_url: 'https://undercards.net/images/souls/DETERMINATION.png',
         content: template.template.replace(templateRegex, (m, key) => message.hasOwnProperty(key) ? message[key] : ""),
       };
-      reqHttps(template.hook, JSON.stringify(params), "application/json; charset=UTF-8", () => {});
+      reqHttps(template.hook, JSON.stringify(params), "application/json; charset=UTF-8");
     }
   });
 });
@@ -189,7 +189,13 @@ function reqHttps(url, body, type, callback) {
   const req = https.request(options, res => {
     //console.log("statusCode:", res.statusCode);
     //console.log("headers:", res.headers);
-    callback(res.headers);
+    if (callback) {
+      if (res.statusCode !== 200) {
+        console.error('Server unavailable');
+        process.exit();
+      }
+      callback(res.headers);
+    }
     /*let total = "";
     res.on("data", d => {
       total += d;
@@ -198,7 +204,7 @@ function reqHttps(url, body, type, callback) {
       callback ? callback(total) : null;
     });*/
   });
-  req.on("error", console.error.bind(console));
+  //req.on("error", console.error.bind(console));
   if (body) req.write(body);
   req.end();
 }
