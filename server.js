@@ -213,6 +213,7 @@ function reqHttps(url, body, type, callback) {
 }
 
 function parseMessageEmotes(message) {
-  // TODO
+  //images are displayed to the web browser as <img src="images/emotes/Disturbed_Burger_Pants.png" />
+  
   return [message, message];
 }
