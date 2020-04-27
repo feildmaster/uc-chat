@@ -15,26 +15,61 @@ const WebSocket = require("ws");
 const Entities = require('html-entities').AllHtmlEntities;
 const entities = new Entities();
 
-const endpoints = {
-  'chat-discussion': process.env.WEBHOOKURL,
-  'chat-strategy': process.env.WEBHOOK_STRATEGY,
-  'chat-beginner': process.env.WEBHOOK_BEGINNER,
-  'chat-tournament': process.env.WEBHOOK_TOURNEY,
-  'chat-roleplay': process.env.WEBHOOK_RP,
-  'chat-support': process.env.WEBHOOK_SUPPORT,
-  'chat-fr': process.env.WEBHOOK_FR,
-  'chat-ru': process.env.WEBHOOK_RU,
-  'chat-es': process.env.WEBHOOK_ES,
-  'chat-pt': process.env.WEBHOOK_PT,
-  'chat-it': process.env.WEBHOOK_IT,
-  'chat-de': process.env.WEBHOOK_DE,
-  'chat-cn': process.env.WEBHOOK_CN,
-  'chat-jp': process.env.WEBHOOK_JP,
-  'chat-tr': process.env.WEBHOOK_TR,
-  'chat-pl': process.env.WEBHOOK_PL,
-};
-
 const templateRegex = /\$(\d+)/g;
+const emoteRegex = /<img src="images\/emotes\/([^.]*).(png|gif)" ?\/>/g;
+const specialCharacters = /([`|*_~]|^>)/g;
+
+const endpoints = {
+  'chat-discussion': {
+    name: 'Discussion',
+    hook: process.env.WEBHOOKURL,
+  },
+  'chat-strategy': {
+    hook: process.env.WEBHOOK_STRATEGY,
+  },
+  'chat-beginner': {
+    hook: process.env.WEBHOOK_BEGINNER,
+  },
+  'chat-tournament': {
+    hook: process.env.WEBHOOK_TOURNEY,
+  },
+  'chat-roleplay': {
+    hook: process.env.WEBHOOK_RP,
+  },
+  'chat-support': {
+    hook: process.env.WEBHOOK_SUPPORT,
+  },
+  'chat-fr': {
+    hook: process.env.WEBHOOK_FR,
+  },
+  'chat-ru': {
+    hook: process.env.WEBHOOK_RU,
+  },
+  'chat-es': {
+    hook: process.env.WEBHOOK_ES,
+  },
+  'chat-pt': {
+    hook: process.env.WEBHOOK_PT,
+  },
+  'chat-it': {
+    hook: process.env.WEBHOOK_IT,
+  },
+  'chat-de': {
+    hook: process.env.WEBHOOK_DE,
+  },
+  'chat-cn': {
+    hook: process.env.WEBHOOK_CN,
+  },
+  'chat-jp': {
+    hook: process.env.WEBHOOK_JP,
+  },
+  'chat-tr': {
+    hook: process.env.WEBHOOK_TR,
+  },
+  'chat-pl': {
+    hook: process.env.WEBHOOK_PL,
+  },
+};
 
 const autoTemplates = {
   'chat-legendary-notification': {
@@ -59,8 +94,6 @@ const autoTemplates = {
   },
 };
 
-const specialCharacters = /([`|*_~]|^>)/g;
-
 const ranks = [
   '', // Blank
   'ff0000', // Admin
@@ -79,15 +112,15 @@ const ranks = [
 //sign in once
 /**/
 reqHttps("undercards.net/SignIn", process.env.LOGINBODY, "application/x-www-form-urlencoded; charset=UTF-8", headers => {
-  let setCookie = headers["set-cookie"];
-  let auth = setCookie.map(cookie => cookie.split(";")[0]).join("; ") + ";";
+  const setCookie = headers["set-cookie"];
+  const auth = setCookie.map(cookie => cookie.split(";")[0]).join("; ") + ";";
   //console.log(auth);
 
   //ws stuff with auth
   const hostname = "undercards.net/chat";
   const options = {
     headers: {
-      Cookie: auth
+      Cookie: auth,
     }
   };
   const ws = new WebSocket("wss://undercards.net/chat", options);
@@ -95,7 +128,7 @@ reqHttps("undercards.net/SignIn", process.env.LOGINBODY, "application/x-www-form
   ws.on("open", function open() {
     // Join rooms we care about
     Object.keys(endpoints).forEach((room) => {
-      if (!endpoints[room]) return;
+      if (!endpoints[room].hook) return;
       ws.send(JSON.stringify({
         room,
         action: "openRoom",
@@ -103,12 +136,9 @@ reqHttps("undercards.net/SignIn", process.env.LOGINBODY, "application/x-www-form
     });
 
     setInterval(() => {
-      ws.send(
-        JSON.stringify({
-          ping: "pong"
-        })
-      );
-      //console.log("pinged");
+      ws.send(JSON.stringify({
+        ping: "pong"
+      }));
     }, 9000);
   });
   
@@ -119,20 +149,20 @@ reqHttps("undercards.net/SignIn", process.env.LOGINBODY, "application/x-www-form
   });
 
   ws.on("message", function incoming(data) {
-    let parsedData = JSON.parse(data);
+    const parsedData = JSON.parse(data);
     // console.log(parsedData)
     if (parsedData.action === 'getMessage') {
       const room = parsedData.room;
-      const endpoint = endpoints[room];
-      if (!endpoint) return; // This is just a fail-safe
-      let chatMessage = JSON.parse(parsedData.chatMessage);
+      const endpoint = endpoints[room] || {};
+      if (!endpoint.hook) return; // This is just a fail-safe
+      const chatMessage = JSON.parse(parsedData.chatMessage);
       //let id = chatMessage.id;
-      let user = chatMessage.user;
+      const user = chatMessage.user;
       //decode html entities sent over and fit to discord
-      let message = entities.decode(parseMessageEmotes(chatMessage.message)).replace(specialCharacters, '\\$1');
+      const message = entities.decode(parseMessageEmotes(chatMessage.message)).replace(specialCharacters, '\\$1');
       //console.log(id, user.username, message);
-      let params = {
-        username: `${room} webhook`,
+      const params = {
+        username: endpoint.name || `${room} webhook`,
         avatar_url: 'https://undercards.net/images/souls/DETERMINATION.png',
         //content: message,
         embeds: [
@@ -149,7 +179,7 @@ reqHttps("undercards.net/SignIn", process.env.LOGINBODY, "application/x-www-form
           }
         ]
       };
-      reqHttps(endpoint, JSON.stringify(params), "application/json; charset=UTF-8");
+      reqHttps(endpoint.hook, JSON.stringify(params), "application/json; charset=UTF-8");
     } else if (parsedData.action === 'getMessageBroadcast') {
       const endpoint = process.env.WEBHOOK_INFO;
       if (!endpoint) return;
@@ -223,8 +253,7 @@ function reqHttps(url, body, type, callback) {
 
 function parseMessageEmotes(message) {
   //images are displayed to the web browser as <img src="images/emotes/Disturbed_Burger_Pants.png" />
-  let emoteRegex = /<img src="images\/emotes\/([^.]*).(png|gif)" ?\/>/g;
-  let parsedMessage = message.replace(emoteRegex, ':$1:');
+  const parsedMessage = message.replace(emoteRegex, ':$1:');
   // console.log(parsedMessage);
   return parsedMessage;
 }
