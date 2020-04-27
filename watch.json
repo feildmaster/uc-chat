@@ -1,13 +1,13 @@
 {
   "install": {
     "include": [
-      "^package\\.json$",
-      "^\\.env$"
+      "^package\\.json$"
     ]
   },
   "restart": {
     "include": [
-      "^.trigger-restart
+      "^\\.trigger-restart$",
+      "^\\.env$"
     ]
   },
   "throttle": 10000

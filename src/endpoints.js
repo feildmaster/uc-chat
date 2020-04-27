@@ -1,26 +1,26 @@
 exports.endpoints = {
   'chat-discussion': {
-    // title: 'Discussion',
+    title: 'Discussion',
     hook: process.env.WEBHOOKURL,
   },
   'chat-strategy': {
-    // title: 'Strategy',
+    title: 'Strategy',
     hook: process.env.WEBHOOK_STRATEGY,
   },
   'chat-beginner': {
-    // title: 'Beginner',
+    title: 'Beginner',
     hook: process.env.WEBHOOK_BEGINNER,
   },
   'chat-tournament': {
-    // title: 'Tournament',
+    title: 'Tournament',
     hook: process.env.WEBHOOK_TOURNEY,
   },
   'chat-roleplay': {
-    // title: 'Roleplay',
+    title: 'Roleplay',
     hook: process.env.WEBHOOK_RP,
   },
   'chat-support': {
-    // title: 'Support',
+    title: 'Support',
     hook: process.env.WEBHOOK_SUPPORT,
   },
   'chat-fr': {
