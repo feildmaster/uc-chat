@@ -5,7 +5,7 @@ const entities = new Entities();
 const specialCharacters = /([`|*~]|^>)/g;
 
 function getMessage({ user, message, me }) {
-  let safeMessage = entities.decode(parseMessageEmotes(message.replace('_', '\\_'))).replace(specialCharacters, '\\$1');
+  let safeMessage = entities.decode(parseMessageEmotes(message.replace(/_/g, '\\_'))).replace(specialCharacters, '\\$1');
   if (me) {
     safeMessage = `*${safeMessage}*`;
   }
