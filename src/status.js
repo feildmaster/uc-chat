@@ -24,7 +24,7 @@ function sendStatus({
       value: error.message,
     });
   }
-  return;
+  
   reqHttps(endpoint, JSON.stringify({
     avatar_url: 'https://undercards.net/images/souls/DETERMINATION.png',
     embeds: [embed],
