@@ -110,7 +110,7 @@ reqHttps("undercards.net/SignIn", process.env.LOGINBODY, "application/x-www-form
     }
     
     if (output.hook && output.json) {
-      reqHttps(output.hook, JSON.stringify(output.json), "application/json; charset=UTF-8");
+      reqHttps(output.hook, JSON.stringify(output.json), "application/json;");
     }
   });
 });
