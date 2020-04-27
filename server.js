@@ -19,95 +19,9 @@ const templateRegex = /\$(\d+)/g;
 const emoteRegex = /<img src="images\/emotes\/([^.]*).(png|gif)" ?\/>/g;
 const specialCharacters = /([`|*_~]|^>)/g;
 
-const endpoints = {
-  'chat-discussion': {
-    name: 'Discussion',
-    hook: process.env.WEBHOOKURL,
-  },
-  'chat-strategy': {
-    hook: process.env.WEBHOOK_STRATEGY,
-  },
-  'chat-beginner': {
-    hook: process.env.WEBHOOK_BEGINNER,
-  },
-  'chat-tournament': {
-    hook: process.env.WEBHOOK_TOURNEY,
-  },
-  'chat-roleplay': {
-    hook: process.env.WEBHOOK_RP,
-  },
-  'chat-support': {
-    hook: process.env.WEBHOOK_SUPPORT,
-  },
-  'chat-fr': {
-    hook: process.env.WEBHOOK_FR,
-  },
-  'chat-ru': {
-    hook: process.env.WEBHOOK_RU,
-  },
-  'chat-es': {
-    hook: process.env.WEBHOOK_ES,
-  },
-  'chat-pt': {
-    hook: process.env.WEBHOOK_PT,
-  },
-  'chat-it': {
-    hook: process.env.WEBHOOK_IT,
-  },
-  'chat-de': {
-    hook: process.env.WEBHOOK_DE,
-  },
-  'chat-cn': {
-    hook: process.env.WEBHOOK_CN,
-  },
-  'chat-jp': {
-    hook: process.env.WEBHOOK_JP,
-  },
-  'chat-tr': {
-    hook: process.env.WEBHOOK_TR,
-  },
-  'chat-pl': {
-    hook: process.env.WEBHOOK_PL,
-  },
-};
+const { endpoints, autoTemplates } = require('./src/endpoints');
 
-const autoTemplates = {
-  'chat-legendary-notification': {
-    hook: process.env.WEBHOOK_LEGEND,
-    title: 'Legendary draw',
-    template: '$1 has just obtained $2!',
-  },
-  'chat-legendary-shiny-notification': {
-    hook: process.env.WEBHOOK_LEGEND,
-    title: 'Legendary draw',
-    template: '$1 has just obtained Shiny $2!',
-  },
-  'chat-user-ws': {
-    hook: process.env.WEBHOOK_WS,
-    title: 'Win streak',
-    template: '$1 is on a $2 game winning streak!',
-  },
-  'chat-user-ws-stop': {
-    hook: process.env.WEBHOOK_WS,
-    title: 'Win streak',
-    template: `$1 has just stopped $2's $3 game winning streak!`,
-  },
-};
-
-const ranks = [
-  '', // Blank
-  'ff0000', // Admin
-  'fca500', // Coordinator
-  '00cc00', // Moderator
-  '41fcff', // Supporter
-  'd535d9', // Balancer
-  '00ceff', // Designer
-  '7355ff', // Artist
-  '43ec94', // Tester
-  '', // Unused
-  '0091ff', // Default
-  'ffd700', // Contributor
-];
+const ranks = require('./src/ranks');
 
 //sign in once
 /**/
@@ -162,7 +76,7 @@ reqHttps("undercards.net/SignIn", process.env.LOGINBODY, "application/x-www-form
       const message = entities.decode(parseMessageEmotes(chatMessage.message)).replace(specialCharacters, '\\$1');
       //console.log(id, user.username, message);
       const params = {
-        username: endpoint.name || `${room} webhook`,
+        username: `${endpoint.title || room} webhook`,
         avatar_url: 'https://undercards.net/images/souls/DETERMINATION.png',
         //content: message,
         embeds: [
