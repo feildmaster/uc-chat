@@ -68,7 +68,7 @@ reqHttps("undercards.net/SignIn", process.env.LOGINBODY, "application/x-www-form
       //console.log(id, user.username, message);
       output.hook = endpoint.hook;
       output.json = {
-        username: `${endpoint.title || room} webhook`,
+        username: `${endpoint.title || room} chat`,
         avatar_url: 'https://undercards.net/images/souls/DETERMINATION.png',
         //content: message,
         embeds: [
