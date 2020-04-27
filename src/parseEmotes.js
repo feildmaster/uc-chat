@@ -6,9 +6,7 @@ function parseMessageEmotes(message) {
   //images are displayed to the web browser as <img src="images/emotes/Disturbed_Burger_Pants.png" />
   const parsedMessage = message.replace(emoteRegex, (match, $1) => {
     const emote = $1.replace(/\\/g, '');
-    const emogee = emoji[emote];
-    if (emogee) return emogee;
-    return `:${emote}:`;
+    return emoji[emote] || `:${emote}:`;
   });
   // console.log(parsedMessage);
   return parsedMessage;
