@@ -3,7 +3,7 @@ const parseMessageEmotes = require('./parseEmotes');
 
 const entities = new Entities();
 const specialCharacters = /([`|*~]|^>)/g;
-const emoteRegex = /:[^\s]+(?:\\_[^\s_]+)+:/g;
+const emoteRegex = /:[^\s:]+(?:\\_[^\s_:]+)+:/g;
 
 function getMessage({ user, message, me }) {
   let safeMessage = entities.decode(parseMessageEmotes(message.replace(/_/g, '\\_'))) // Scrub underscores
