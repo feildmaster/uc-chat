@@ -2,6 +2,7 @@ const axios = require("axios");
 const endpoint = process.env.WEBHOOK_STATUS;
 
 let safeExit = false;
+const start = Date.now();
 
 function sendStatus({
   status = true,
