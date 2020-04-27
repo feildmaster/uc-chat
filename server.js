@@ -7,6 +7,7 @@ const { endpoints, autoTemplates } = require('./src/endpoints');
 const ranks = require('./src/ranks');
 const reqHttps = require('./src/https');
 const getMessage = require('./src/getMessage');
+const sendStatus = require('./src/status');
 
 const templateRegex = /\$(\d+)/g;
 
@@ -26,6 +27,7 @@ reqHttps("undercards.net/SignIn", process.env.LOGINBODY, "application/x-www-form
   const ws = new WebSocket("wss://undercards.net/chat", options);
   //ws stuff
   ws.on("open", function open() {
+    sendStatus({message: 'Connected'});
     // Join rooms we care about
     Object.keys(endpoints).forEach((room) => {
       if (!endpoints[room].hook) return;
