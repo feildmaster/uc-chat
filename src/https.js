@@ -1,4 +1,5 @@
 const https = require("https");
+const status = require('./status');
 
 //boilerplate https post request, better to have fine control than a library
 //do NOT put https:// part of url, it expects everything after that
@@ -30,7 +31,7 @@ function reqHttps(url, body, type, callback) {
     if (callback) {
       if (res.statusCode !== 302 && res.statusCode !== 200) { // Redirect to quests
         const message = 'Server unavailable';
-        require('./status')({message, status: false});
+        status({message, status: false});
         console.error(message);
         process.exit();
       }

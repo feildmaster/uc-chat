@@ -2,6 +2,7 @@
 require('./src/glitch');
 
 //real stuff
+const axios = require('axios');
 const WebSocket = require("ws");
 const { endpoints, autoTemplates } = require('./src/endpoints');
 const ranks = require('./src/ranks');
@@ -109,7 +110,7 @@ reqHttps("undercards.net/SignIn", process.env.LOGINBODY, "application/x-www-form
     }
     
     if (output.hook && output.json) {
-      reqHttps(output.hook, JSON.stringify(output.json), "application/json;");
+      axios.post(output.hook, output.json);
     }
   });
 });
