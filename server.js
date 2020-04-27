@@ -3,19 +3,14 @@ require('./src/glitch');
 
 //real stuff
 const WebSocket = require("ws");
-const Entities = require('html-entities').AllHtmlEntities;
 const { endpoints, autoTemplates } = require('./src/endpoints');
 const ranks = require('./src/ranks');
 const reqHttps = require('./src/https');
-const parseMessageEmotes = require('./src/parseEmotes');
-
-const entities = new Entities();
+const getMessage = require('./src/getMessage');
 
 const templateRegex = /\$(\d+)/g;
-const specialCharacters = /([`|*_~]|^>)/g;
 
 //sign in once
-/**/
 reqHttps("undercards.net/SignIn", process.env.LOGINBODY, "application/x-www-form-urlencoded; charset=UTF-8", headers => {
   const setCookie = headers["set-cookie"];
   const auth = setCookie.map(cookie => cookie.split(";")[0]).join("; ") + ";";
@@ -69,7 +64,7 @@ reqHttps("undercards.net/SignIn", process.env.LOGINBODY, "application/x-www-form
       //let id = chatMessage.id;
       const user = chatMessage.user;
       //decode html entities sent over and fit to discord
-      const message = entities.decode(parseMessageEmotes(chatMessage.message)).replace(specialCharacters, '\\$1');
+      const { message, username } = getMessage(chatMessage);
       //console.log(id, user.username, message);
       output.hook = endpoint.hook;
       output.json = {
@@ -79,7 +74,7 @@ reqHttps("undercards.net/SignIn", process.env.LOGINBODY, "application/x-www-form
         embeds: [
           {
             author: {
-              name: entities.decode(user.username),
+              name: username,
               icon_url: 'https://undercards.net/images/avatars/' + user.avatar.image + '.' + user.avatar.extension
             },
             description: message,
@@ -116,4 +111,3 @@ reqHttps("undercards.net/SignIn", process.env.LOGINBODY, "application/x-www-form
     }
   });
 });
-//*/
