@@ -18,7 +18,6 @@ reqHttps("undercards.net/SignIn", process.env.LOGINBODY, "application/x-www-form
   //console.log(auth);
 
   //ws stuff with auth
-  const hostname = "undercards.net/chat";
   const options = {
     headers: {
       Cookie: auth,
