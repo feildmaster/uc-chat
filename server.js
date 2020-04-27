@@ -22,6 +22,16 @@ const endpoints = {
   'chat-tournament': process.env.WEBHOOK_TOURNEY,
   'chat-roleplay': process.env.WEBHOOK_RP,
   'chat-support': process.env.WEBHOOK_SUPPORT,
+  'chat-fr': process.env.WEBHOOK_FR,
+  'chat-ru': process.env.WEBHOOK_RU,
+  'chat-es': process.env.WEBHOOK_ES,
+  'chat-pt': process.env.WEBHOOK_PT,
+  'chat-it': process.env.WEBHOOK_IT,
+  'chat-de': process.env.WEBHOOK_DE,
+  'chat-cn': process.env.WEBHOOK_CN,
+  'chat-jp': process.env.WEBHOOK_JP,
+  'chat-tr': process.env.WEBHOOK_TR,
+  'chat-pl': process.env.WEBHOOK_PL,
 };
 
 const templateRegex = /\$(\d+)/g;
