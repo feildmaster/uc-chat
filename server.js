@@ -54,6 +54,11 @@ reqHttps("undercards.net/SignIn", process.env.LOGINBODY, "application/x-www-form
   });
 
   ws.on("message", function incoming(data) {
+    const output = {
+      hook: null,
+      json: null,
+    };
+    
     const parsedData = JSON.parse(data);
     // console.log(parsedData)
     if (parsedData.action === 'getMessage') {
@@ -66,7 +71,8 @@ reqHttps("undercards.net/SignIn", process.env.LOGINBODY, "application/x-www-form
       //decode html entities sent over and fit to discord
       const message = entities.decode(parseMessageEmotes(chatMessage.message)).replace(specialCharacters, '\\$1');
       //console.log(id, user.username, message);
-      const params = {
+      output.hook = endpoint.hook;
+      output.json = {
         username: `${endpoint.title || room} webhook`,
         avatar_url: 'https://undercards.net/images/souls/DETERMINATION.png',
         //content: message,
@@ -84,26 +90,29 @@ reqHttps("undercards.net/SignIn", process.env.LOGINBODY, "application/x-www-form
           }
         ]
       };
-      reqHttps(endpoint.hook, JSON.stringify(params), "application/json; charset=UTF-8");
     } else if (parsedData.action === 'getMessageBroadcast') {
       const endpoint = process.env.WEBHOOK_INFO;
       if (!endpoint) return;
-      const params = {
+      output.hook = endpoint;
+      output.json = {
         username: 'info-chan',
         avatar_url: 'https://undercards.net/images/souls/DETERMINATION.png',
         content: parsedData.message,
       };
-      reqHttps(endpoint, JSON.stringify(params), "application/json; charset=UTF-8");
     } else if (parsedData.action === 'getMessageAuto') {
       const message = JSON.parse(JSON.parse(parsedData.message).args);
       const endpoint = autoTemplates[message[0]];
       if (!endpoint || !endpoint.hook) return;
-      const params = {
+      output.hook = endpoint.hook;
+      output.json = {
         username: `${endpoint.title} webhook`,
         avatar_url: 'https://undercards.net/images/souls/DETERMINATION.png',
         content: endpoint.template.replace(templateRegex, (m, key) => message.hasOwnProperty(key) ? message[key] : ""),
       };
-      reqHttps(endpoint.hook, JSON.stringify(params), "application/json; charset=UTF-8");
+    }
+    
+    if (output.hook && output.json) {
+      reqHttps(output.hook, JSON.stringify(output.json), "application/json; charset=UTF-8");
     }
   });
 });
