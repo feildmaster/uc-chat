@@ -6,7 +6,7 @@ const start = Date.now();
 
 function sendStatus({
   status = true,
-  message = "",
+  message,
   error
 } = {}) {
   if (!endpoint) return;
