@@ -1,27 +1,18 @@
 //glitch stuff
-const express = require("express");
-const app = express();
-app.use(express.static("public"));
-app.get("/", (request, response) => {
-  response.send("oof");
-});
-const listener = app.listen(process.env.PORT, () => {
-  console.log("Your app is listening on port " + listener.address().port);
-});
+require('./src/glitch');
 
 //real stuff
-const https = require("https");
 const WebSocket = require("ws");
 const Entities = require('html-entities').AllHtmlEntities;
+const { endpoints, autoTemplates } = require('./src/endpoints');
+const ranks = require('./src/ranks');
+const reqHttps = require('./src/https');
+const parseMessageEmotes = require('./src/parseEmotes');
+
 const entities = new Entities();
 
 const templateRegex = /\$(\d+)/g;
-const emoteRegex = /<img src="images\/emotes\/([^.]*).(png|gif)" ?\/>/g;
 const specialCharacters = /([`|*_~]|^>)/g;
-
-const { endpoints, autoTemplates } = require('./src/endpoints');
-
-const ranks = require('./src/ranks');
 
 //sign in once
 /**/
@@ -105,69 +96,15 @@ reqHttps("undercards.net/SignIn", process.env.LOGINBODY, "application/x-www-form
       reqHttps(endpoint, JSON.stringify(params), "application/json; charset=UTF-8");
     } else if (parsedData.action === 'getMessageAuto') {
       const message = JSON.parse(JSON.parse(parsedData.message).args);
-      const template = autoTemplates[message[0]];
-      if (!template || !template.hook) return;
+      const endpoint = autoTemplates[message[0]];
+      if (!endpoint || !endpoint.hook) return;
       const params = {
-        username: `${template.title} webhook`,
+        username: `${endpoint.title} webhook`,
         avatar_url: 'https://undercards.net/images/souls/DETERMINATION.png',
-        content: template.template.replace(templateRegex, (m, key) => message.hasOwnProperty(key) ? message[key] : ""),
+        content: endpoint.template.replace(templateRegex, (m, key) => message.hasOwnProperty(key) ? message[key] : ""),
       };
-      reqHttps(template.hook, JSON.stringify(params), "application/json; charset=UTF-8");
+      reqHttps(endpoint.hook, JSON.stringify(params), "application/json; charset=UTF-8");
     }
   });
 });
 //*/
-
-//boilerplate https post request, better to have fine control than a library
-//do NOT put https:// part of url, it expects everything after that
-function reqHttps(url, body, type, callback) {
-  const hostname = url.split("/")[0];
-  const options = {
-    hostname: hostname,
-    port: 443,
-    path: encodeURI(url.slice(url.indexOf("/"))),
-    method: "POST",
-    headers: {
-      Accept: "*/*",
-      "Accept-Encoding": "gzip, deflate, br",
-      "Accept-Language": "en-US,en;q=0.9,es;q=0.8",
-      Connection: "keep-alive",
-      "Content-Type": type,
-      "Content-Length": body ? body.length : 0,
-      //Cookie: cookie,
-      Host: hostname,
-      Origin: "https://" + hostname,
-      Referer: "https://" + hostname,
-      "User-Agent":
-        "Mozilla/5.0 (Windows NT 6.1; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/70.0.3538.110 Safari/537.36"
-    }
-  };
-  const req = https.request(options, res => {
-    //console.log("statusCode:", res.statusCode);
-    //console.log("headers:", res.headers);
-    if (callback) {
-      if (res.statusCode !== 302 && res.statusCode !== 200) { // Redirect to quests
-        console.error('Server unavailable');
-        process.exit();
-      }
-      callback(res.headers);
-    }
-    /*let total = "";
-    res.on("data", d => {
-      total += d;
-    });
-    res.on("end", () => {
-      callback ? callback(total) : null;
-    });*/
-  });
-  //req.on("error", console.error.bind(console));
-  if (body) req.write(body);
-  req.end();
-}
-
-function parseMessageEmotes(message) {
-  //images are displayed to the web browser as <img src="images/emotes/Disturbed_Burger_Pants.png" />
-  const parsedMessage = message.replace(emoteRegex, ':$1:');
-  // console.log(parsedMessage);
-  return parsedMessage;
-}
