@@ -1,4 +1,4 @@
-const https = require('./https');
+const reqHttps = require('./https');
 const endpoint = process.env.WEBHOOK_STATUS;
 
 function sendStatus({
@@ -24,8 +24,8 @@ function sendStatus({
       value: error.message,
     });
   }
-  
-  https(endpoint, JSON.stringify({
+  return;
+  reqHttps(endpoint, JSON.stringify({
     avatar_url: 'https://undercards.net/images/souls/DETERMINATION.png',
     embeds: [embed],
   }), "application/json; charset=UTF-8");
