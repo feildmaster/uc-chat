@@ -14,13 +14,14 @@ function sendStatus({
   safeExit = !status;
 
   const embed = {
-    description: message,
     fields: [{
       name: "Status",
       value: status ? "online" : "offline",
       inline: true
     }],
   };
+  
+  if (message) embed.description = message;
 
   if (error) {
     embed.fields.push({
