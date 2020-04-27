@@ -29,8 +29,9 @@ function reqHttps(url, body, type, callback) {
     //console.log("headers:", res.headers);
     if (callback) {
       if (res.statusCode !== 302 && res.statusCode !== 200) { // Redirect to quests
-        // sendStatus({message: 'Server unavailable', status: false});
-        console.error('Server unavailable');
+        const message = 'Server unavailable';
+        require('./status')({message, status: false});
+        console.error(message);
         process.exit();
       }
       callback(res.headers);
