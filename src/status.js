@@ -1,4 +1,6 @@
 const axios = require("axios");
+const prettyDuration = require('pretty-ms');
+
 const endpoint = process.env.WEBHOOK_STATUS;
 
 let safeExit = false;
@@ -12,22 +14,20 @@ function sendStatus({
 
   safeExit = !status;
 
-  const embed = {
-    fields: [{
-      name: "> Status",
-      value: status ? "online" : "offline",
-      inline: true
-    }],
-  };
+  const embed = { fields: [] };
   
   if (message) embed.description = message;
-
-  if (error) {
-    embed.fields.push({
-      name: "Error",
-      value: error.message
-    });
+  
+  function stat(name, value, inline = true) {
+    embed.fields.push({ name: `❯ ${name}`, value, inline });
   }
+  
+  stat('Status', status ? "online" : "offline");
+  stat('Uptime', prettyDuration(process.uptime() * 1000));
+  
+  // TODO: More stats
+
+  if (error) stat('Error', error.message, false);
 
   return axios.post(endpoint, {
     avatar_url: "https://undercards.net/images/souls/DETERMINATION.png",
