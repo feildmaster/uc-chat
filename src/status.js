@@ -2,7 +2,6 @@ const axios = require("axios");
 const endpoint = process.env.WEBHOOK_STATUS;
 
 let safeExit = false;
-const start = Date.now();
 
 function sendStatus({
   status = true,
@@ -15,7 +14,7 @@ function sendStatus({
 
   const embed = {
     fields: [{
-      name: "Status",
+      name: "> Status",
       value: status ? "online" : "offline",
       inline: true
     }],
