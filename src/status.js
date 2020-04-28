@@ -9,7 +9,7 @@ function sendStatus({
   message,
   error
 } = {}) {
-  if (!endpoint) return;
+  if (!endpoint || safeExit) return Promise.resolve(false);
 
   safeExit = !status;
 
@@ -30,18 +30,15 @@ function sendStatus({
     });
   }
 
-  axios.post(endpoint, {
+  return axios.post(endpoint, {
     avatar_url: "https://undercards.net/images/souls/DETERMINATION.png",
     embeds: [embed]
-  });
+  }).then(() => true);
 }
 
-process.on("beforeExit", () => {
-  if (safeExit) return;
-  sendStatus({
-    status: false,
-    message: "Unexpected termination"
-  });
-});
+process.on("beforeExit", () => sendStatus({
+  status: false,
+  message: "Unexpected termination"
+}));
 
 module.exports = sendStatus;
