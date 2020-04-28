@@ -1,7 +1,7 @@
 const axios = require("axios");
 const prettyDuration = require('pretty-ms');
 
-// process.env.
+// process.env.PROJECT_DOMAIN (https://api.glitch.com/v1/projects/by/domain?domain={PROJECT_DOMAIN})
 
 const endpoint = process.env.WEBHOOK_STATUS;
 
