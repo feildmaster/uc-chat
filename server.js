@@ -46,9 +46,11 @@ reqHttps("undercards.net/SignIn", process.env.LOGINBODY, "application/x-www-form
   
   //if the server goes down restart the app for new auth
   ws.on("close", function socketClosed() {
-    sendStatus({status: false}); // Going offline
-    console.log('Websocket disconnected');
-    process.exit();
+    const message = 'Websocket disconnected';
+    sendStatus({status: false}).then(() => {
+      console.log(message);
+      process.exit();
+    });
   });
 
   ws.on("message", function incoming(data) {
