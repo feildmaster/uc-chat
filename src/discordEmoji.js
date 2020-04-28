@@ -59,7 +59,7 @@ module.exports = {
   'Intensive_Asriel': '',
   'Frisk_Clap': '',
   'Angry_Paps': '',
-  'Weevil': '<:Weevil:704364078570799134>',
+  'Wheevil': '<:Wheevil:704364078570799134>',
   'Apoca_What': '',
   'zzz': '',
   'Thinking_Asriel': '',
