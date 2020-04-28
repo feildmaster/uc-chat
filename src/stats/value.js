@@ -13,11 +13,11 @@ class Value {
     return this.val;
   }
   
-  get name() {
+  get key() {
     return this.n;
   }
   
   toString() {
-    return `${this.name}: ${this.value}`;
+    return `[${this.name}] ${this.key}: ${this.value}`;
   }
 }

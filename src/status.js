@@ -8,7 +8,7 @@ let safeExit = false;
 function sendStatus({
   status = true,
   message,
-  error
+  error,
 } = {}) {
   if (!endpoint || safeExit) return Promise.resolve(false);
 
