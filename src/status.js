@@ -1,6 +1,8 @@
 const axios = require("axios");
 const prettyDuration = require('pretty-ms');
 
+// process.env.
+
 const endpoint = process.env.WEBHOOK_STATUS;
 
 let safeExit = false;
