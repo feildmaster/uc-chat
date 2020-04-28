@@ -37,7 +37,7 @@ function sendStatus({
   }).then(() => true);
 }
 
-process.on("beforeExit", () => sendStatus({
+process.on("beforeExit", () => safeExit || sendStatus({
   status: false,
   message: "Unexpected termination"
 }));
