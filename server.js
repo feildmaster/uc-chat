@@ -110,12 +110,18 @@ reqHttps("undercards.net/SignIn", process.env.LOGINBODY, "application/x-www-form
         avatar_url: 'https://undercards.net/images/souls/DETERMINATION.png',
         content: endpoint.template.replace(templateRegex, (m, key) => message.hasOwnProperty(key) ? message[key] : ""),
       };
+    } else if (parsedData.action === 'deleteMessages') {
+        
     }
     
     if (output.hook && output.json) {
-      axios.post(output.hook, output.json);
+      post(output.hook, output.json);
     }
   });
   
   process.on('exit', () => ws.close());
 });
+
+function post(hook, data) {
+  axios.post(hook, data);
+}
