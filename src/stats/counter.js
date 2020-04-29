@@ -15,4 +15,4 @@ class Counter extends Value {
   }
 }
 
-module.export = Counter;
+module.exports = Counter;

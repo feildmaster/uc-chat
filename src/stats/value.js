@@ -21,3 +21,5 @@ class Value {
     return `[${this.name}] ${this.key}: ${this.value}`;
   }
 }
+
+module.exports = Value;
