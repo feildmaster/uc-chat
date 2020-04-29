@@ -94,7 +94,11 @@ reqHttps("undercards.net/SignIn", process.env.LOGINBODY, "application/x-www-form
         ]
       };
       
-      if (message.toLowercase().includes('@report')) {}
+      const alertRole = process.env.ALERT_ROLE;
+      if (alertRole && message.toLowerCase().startsWith('@report')) {
+        // TODO: Rate limit command
+        output.json.content = alertRole;
+      }
       
     } else if (parsedData.action === 'getMessageBroadcast') {
       const endpoint = process.env.WEBHOOK_INFO;
@@ -103,7 +107,7 @@ reqHttps("undercards.net/SignIn", process.env.LOGINBODY, "application/x-www-form
       output.json = {
         username: 'info-chan',
         avatar_url: 'https://undercards.net/images/souls/DETERMINATION.png',
-        content: parsedData.message,
+        content: parsedData.message, // TODO: Parse message for images
       };
     } else if (parsedData.action === 'getMessageAuto') {
       const message = parsedData.message.args;
