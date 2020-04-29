@@ -93,6 +93,9 @@ reqHttps("undercards.net/SignIn", process.env.LOGINBODY, "application/x-www-form
           }
         ]
       };
+      
+      if (message.toLowercase().includes('@report')) {}
+      
     } else if (parsedData.action === 'getMessageBroadcast') {
       const endpoint = process.env.WEBHOOK_INFO;
       if (!endpoint) return;
