@@ -115,6 +115,7 @@ reqHttps("undercards.net/SignIn", process.env.LOGINBODY, "application/x-www-form
     } else if (parsedData.action === 'deleteMessages') {
       const ids = parsedData.listId;
       const entries = new Map();
+      // Done like this in case they were using multiple channels
       ids.forEach((id) => {
         const data = chatRecord.get(id);
         const key = `${data.room}_${data.userid}`;
