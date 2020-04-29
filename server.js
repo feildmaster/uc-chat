@@ -159,5 +159,5 @@ function post(hook, data) {
   //console.log('Sending message');
   axios.post(hook, data)
     //.then(() => console.log('Sent'))
-    .catch(console.error);
+    .catch((error = {}) => console.error(error.isAxiosError ? error.response : error));
 }
