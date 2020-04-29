@@ -100,7 +100,6 @@ reqHttps("undercards.net/SignIn", process.env.LOGINBODY, "application/x-www-form
         // TODO: Rate limit command
         output.json.content = alertRole;
       }
-      
     } else if (parsedData.action === 'getMessageBroadcast') {
       const endpoint = process.env.WEBHOOK_INFO;
       if (!endpoint) return;
