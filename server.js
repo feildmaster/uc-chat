@@ -156,6 +156,7 @@ reqHttps("undercards.net/SignIn", process.env.LOGINBODY, "application/x-www-form
 });
 
 function post(hook, data) {
+  // TODO: Message queue for rate limits
   //console.log('Sending message');
   axios.post(hook, data)
     //.then(() => console.log('Sent'))
