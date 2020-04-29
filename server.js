@@ -14,7 +14,13 @@ const chatRecord = require('./src/chat-record');
 const templateRegex = /\$(\d+)/g;
 
 //sign in once
-reqHttps("undercards.net/SignIn", process.env.LOGINBODY, "application/x-www-form-urlencoded; charset=UTF-8", headers => {
+const hostname = 'undercards.net';
+reqHttps("undercards.net/SignIn", process.env.LOGINBODY, {
+  'Content-Type': "application/x-www-form-urlencoded; charset=UTF-8",
+  Host: hostname,
+  Origin: "https://" + hostname,
+  Referer: "https://" + hostname,
+}, headers => {
   const setCookie = headers["set-cookie"];
   const auth = setCookie.map(cookie => cookie.split(";")[0]).join("; ") + ";";
   //console.log(auth);
