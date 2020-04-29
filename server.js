@@ -51,7 +51,7 @@ reqHttps("undercards.net/SignIn", process.env.LOGINBODY, "application/x-www-form
     const message = 'Websocket disconnected';
     sendStatus({status: false}).then(() => {
       console.log(message);
-      process.exit();
+      process.exit(1);
     });
   });
 
@@ -114,7 +114,19 @@ reqHttps("undercards.net/SignIn", process.env.LOGINBODY, "application/x-www-form
       };
     } else if (parsedData.action === 'deleteMessages') {
       const ids = parsedData.listId;
-      ids.map((id) => {});
+      const entries = new Map();
+      ids.forEach((id) => {
+        const data = chatRecord.get(id);
+        const key = `${data.room}_${data.userid}`;
+        if (entries.has(key)) return;
+        const endpoint = endpoints[data.room];
+        entries.set(key, {
+          room: endpoint.hook,
+          message: {
+            content: `${data.username}#${data.userid} was muted`,
+          }
+        });
+      });
     }
     
     if (output.hook && output.json) {

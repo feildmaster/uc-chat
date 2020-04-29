@@ -41,7 +41,7 @@ function sendStatus({
 
 process.on("beforeExit", unexpectedTermination);
 
-process.on('SIGINT', () => unexpectedTermination().catch(() => false).then(() => process.exit()));
+process.on('SIGINT', () => unexpectedTermination().catch(() => false).then(() => process.exit(1)));
 
 function unexpectedTermination() {
   return Promise.resolve(safeExit) || sendStatus({
