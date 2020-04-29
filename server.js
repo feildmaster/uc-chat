@@ -60,13 +60,13 @@ reqHttps("undercards.net/SignIn", process.env.LOGINBODY, "application/x-www-form
       json: null,
     };
     
-    const parsedData = JSON.parse(data);
+    const parsedData = parseJSON(data);
     // console.log(parsedData)
     if (parsedData.action === 'getMessage') {
       const room = parsedData.room;
       const endpoint = endpoints[room] || {};
       if (!endpoint.hook) return; // This is just a fail-safe
-      const chatMessage = parseJSON(parsedData.chatMessage);
+      const chatMessage = parsedData.chatMessage;
       //let id = chatMessage.id;
       const user = chatMessage.user;
       //decode html entities sent over and fit to discord
