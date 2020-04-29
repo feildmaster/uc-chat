@@ -39,11 +39,15 @@ function sendStatus({
   }).then(() => true);
 }
 
-process.on("beforeExit", () => safeExit || sendStatus({
-  status: false,
-  message: "Unexpected termination"
-}));
+process.on("beforeExit", unexpectedTermination);
 
+process.on('SIGINT', () => unexpectedTermination().catch(() => false).then(() => process.exit()));
 
+function unexpectedTermination() {
+  return Promise.resolve(safeExit) || sendStatus({
+    status: false,
+    message: "Unexpected termination"
+  });
+}
 
 module.exports = sendStatus;
