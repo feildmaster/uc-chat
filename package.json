@@ -7,7 +7,8 @@
   "description": "A simple Node app built on Express, instantly up and running.",
   "main": "server.js",
   "scripts": {
-    "start": "node server.js"
+    "start": "node server.js",
+    "local": "node localStart.js"
   },
   "dependencies": {
     "axios": "0.19.2",
@@ -28,5 +29,8 @@
     "node",
     "glitch",
     "express"
-  ]
+  ],
+  "devDependencies": {
+    "dotenv": "^8.2.0"
+  }
 }
