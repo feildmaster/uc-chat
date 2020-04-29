@@ -116,4 +116,6 @@ reqHttps("undercards.net/SignIn", process.env.LOGINBODY, "application/x-www-form
       axios.post(output.hook, output.json);
     }
   });
+  
+  process.on('exit', () => ws.close());
 });
