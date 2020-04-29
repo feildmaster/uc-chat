@@ -67,7 +67,7 @@ reqHttps("undercards.net/SignIn", process.env.LOGINBODY, "application/x-www-form
       const room = parsedData.room;
       const endpoint = endpoints[room] || {};
       if (!endpoint.hook) return; // This is just a fail-safe
-      console.log('Received message');
+      // console.log('Received message');
       const chatMessage = JSON.parse(parsedData.chatMessage);
       //let id = chatMessage.id;
       const user = chatMessage.user;
@@ -113,7 +113,7 @@ reqHttps("undercards.net/SignIn", process.env.LOGINBODY, "application/x-www-form
       const message = JSON.parse(JSON.parse(parsedData.message).args);
       const endpoint = autoTemplates[message[0]];
       if (!endpoint || !endpoint.hook) return;
-      console.log('Received message type', message[0]);
+      // console.log('Received message type', message[0]);
       output.hook = endpoint.hook;
       output.json = {
         username: `${endpoint.title} webhook`,
@@ -156,8 +156,8 @@ reqHttps("undercards.net/SignIn", process.env.LOGINBODY, "application/x-www-form
 });
 
 function post(hook, data) {
-  console.log('Sending message');
+  //console.log('Sending message');
   axios.post(hook, data)
-    .then(() => console.log('Sent'))
+    //.then(() => console.log('Sent'))
     .catch(console.error);
 }
