@@ -3,7 +3,7 @@ require('./src/glitch');
 
 //real stuff
 const axios = require('axios');
-const { deepParseJson: parseJSON } = require('deep-parse-json');
+// const { deepParseJson: parseJSON } = require('deep-parse-json');
 const WebSocket = require("ws");
 const { endpoints, autoTemplates } = require('./src/endpoints');
 const ranks = require('./src/ranks');
@@ -61,14 +61,14 @@ reqHttps("undercards.net/SignIn", process.env.LOGINBODY, "application/x-www-form
       json: null,
     };
     
-    const parsedData = parseJSON(data);
+    const parsedData = JSON.parse(data);
     // console.log(parsedData)
     if (parsedData.action === 'getMessage') {
       const room = parsedData.room;
       const endpoint = endpoints[room] || {};
       if (!endpoint.hook) return; // This is just a fail-safe
       console.log('Received message');
-      const chatMessage = parsedData.chatMessage;
+      const chatMessage = JSON.parse(parsedData.chatMessage);
       //let id = chatMessage.id;
       const user = chatMessage.user;
       chatRecord.add(chatMessage, room);
@@ -110,7 +110,7 @@ reqHttps("undercards.net/SignIn", process.env.LOGINBODY, "application/x-www-form
         content: parsedData.message, // TODO: Parse message for images
       };
     } else if (parsedData.action === 'getMessageAuto') {
-      const message = parsedData.message.args;
+      const message = JSON.parse(JSON.parse(parsedData.message).args);
       const endpoint = autoTemplates[message[0]];
       if (!endpoint || !endpoint.hook) return;
       console.log('Received message type', message[0]);

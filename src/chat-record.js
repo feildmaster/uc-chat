@@ -9,7 +9,7 @@ exports.add = ({id, user: {id: userid, username}}, room) => {
   if (overLimit()) { // Check once to skip creation of iterator
     const itr = record.keys();
     do { // In the off chance theres more than 1 stray
-      const key = itr.next();
+      const key = itr.next().value;
       record.delete(key);
     } while (overLimit());
   }
