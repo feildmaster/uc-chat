@@ -25,7 +25,9 @@ function sendStatus({
   }
   
   stat('Status', status ? "online" : "offline");
-  stat('Uptime', prettyDuration(process.uptime() * 1000));
+  stat('Uptime', prettyDuration(process.uptime() * 1000, {
+    secondsDecimalDigits: 0,
+  }));
   
   // TODO: More stats
 
