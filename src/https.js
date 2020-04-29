@@ -6,10 +6,7 @@ const status = require('./status');
 //do NOT put https:// part of url, it expects everything after that
 function reqHttps(url, body, headers = {}, callback) {
   url = URL.parse(url);
-  const hostname = url.hostname;
   const options = {
-    hostname,
-    path: encodeURI(url.path),
     method: "POST",
     headers: {
       'Content-Type': 'application/json',
@@ -17,7 +14,7 @@ function reqHttps(url, body, headers = {}, callback) {
       "Content-Length": body ? body.length : 0,
     }
   };
-  const req = https.request(options, res => {
+  const req = https.request(url, options, res => {
     //console.log("statusCode:", res.statusCode);
     //console.log("headers:", res.headers);
     if (callback) {
