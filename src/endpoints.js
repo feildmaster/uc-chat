@@ -1,7 +1,7 @@
 exports.endpoints = {
   'chat-discussion': {
     title: 'Discussion',
-    hook: process.env.WEBHOOK_DISCUSSION || process.env.WEBHOOKURL,
+    hook: process.env.WEBHOOKURL,
   },
   'chat-strategy': {
     title: 'Strategy',

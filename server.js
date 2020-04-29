@@ -2,7 +2,8 @@
 require('./src/glitch');
 
 //real stuff
-// const axios = require('axios');
+const axios = require('axios');
+const { deepParseJson: parseJSON } = require('deep-parse-json');
 const WebSocket = require("ws");
 const { endpoints, autoTemplates } = require('./src/endpoints');
 const ranks = require('./src/ranks');
@@ -14,18 +15,7 @@ const chatRecord = require('./src/chat-record');
 const templateRegex = /\$(\d+)/g;
 
 //sign in once
-const hostname = 'undercards.net';
-reqHttps("undercards.net/SignIn", process.env.LOGINBODY, {
-  'Content-Type': "application/x-www-form-urlencoded; charset=UTF-8",
-  Host: hostname,
-  Origin: "https://" + hostname,
-  Referer: "https://" + hostname,
-  Accept: "*/*",
-  "Accept-Encoding": "gzip, deflate, br",
-  "Accept-Language": "en-US,en;q=0.9,es;q=0.8",
-  Connection: "keep-alive",
-  "User-Agent": "Mozilla/5.0 (Windows NT 6.1; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/70.0.3538.110 Safari/537.36",
-}, headers => {
+reqHttps("undercards.net/SignIn", process.env.LOGINBODY, "application/x-www-form-urlencoded; charset=UTF-8", headers => {
   const setCookie = headers["set-cookie"];
   const auth = setCookie.map(cookie => cookie.split(";")[0]).join("; ") + ";";
   //console.log(auth);
@@ -71,13 +61,13 @@ reqHttps("undercards.net/SignIn", process.env.LOGINBODY, {
       json: null,
     };
     
-    const parsedData = JSON.parse(data);
+    const parsedData = parseJSON(data);
     // console.log(parsedData)
     if (parsedData.action === 'getMessage') {
       const room = parsedData.room;
       const endpoint = endpoints[room] || {};
       if (!endpoint.hook) return; // This is just a fail-safe
-      const chatMessage = JSON.parse(parsedData.chatMessage);
+      const chatMessage = parsedData.chatMessage;
       //let id = chatMessage.id;
       const user = chatMessage.user;
       chatRecord.add(chatMessage, room);
@@ -120,7 +110,7 @@ reqHttps("undercards.net/SignIn", process.env.LOGINBODY, {
         content: parsedData.message, // TODO: Parse message for images
       };
     } else if (parsedData.action === 'getMessageAuto') {
-      const message = JSON.parse(JSON.parse(parsedData.message).args);
+      const message = parsedData.message.args;
       const endpoint = autoTemplates[message[0]];
       if (!endpoint || !endpoint.hook) return;
       output.hook = endpoint.hook;
@@ -162,5 +152,5 @@ reqHttps("undercards.net/SignIn", process.env.LOGINBODY, {
 });
 
 function post(hook, data) {
-  reqHttps(hook, data);
+  axios.post(hook, data);
 }
