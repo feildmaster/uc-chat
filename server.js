@@ -3,6 +3,7 @@ require('./src/glitch');
 
 //real stuff
 const axios = require('axios');
+const { parseJSON } = require('deep-parse-json');
 const WebSocket = require("ws");
 const { endpoints, autoTemplates } = require('./src/endpoints');
 const ranks = require('./src/ranks');
@@ -65,7 +66,7 @@ reqHttps("undercards.net/SignIn", process.env.LOGINBODY, "application/x-www-form
       const room = parsedData.room;
       const endpoint = endpoints[room] || {};
       if (!endpoint.hook) return; // This is just a fail-safe
-      const chatMessage = JSON.parse(parsedData.chatMessage);
+      const chatMessage = parseJSON(parsedData.chatMessage);
       //let id = chatMessage.id;
       const user = chatMessage.user;
       //decode html entities sent over and fit to discord
@@ -100,7 +101,7 @@ reqHttps("undercards.net/SignIn", process.env.LOGINBODY, "application/x-www-form
         content: parsedData.message,
       };
     } else if (parsedData.action === 'getMessageAuto') {
-      const message = JSON.parse(JSON.parse(parsedData.message).args);
+      const message = parsedData.message.args;
       const endpoint = autoTemplates[message[0]];
       if (!endpoint || !endpoint.hook) return;
       output.hook = endpoint.hook;
