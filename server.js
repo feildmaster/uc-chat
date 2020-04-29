@@ -123,9 +123,15 @@ reqHttps("undercards.net/SignIn", process.env.LOGINBODY, "application/x-www-form
         entries.set(key, {
           room: endpoint.hook,
           message: {
+            username: `${endpoint.title || data.room} chat`,
+            avatar_url: 'https://undercards.net/images/souls/DETERMINATION.png',
             content: `${data.username}#${data.userid} was muted`,
           }
         });
+        
+        for (const data of entries.values()) {
+          post(data.room, data.message);
+        }
       });
     }
     
