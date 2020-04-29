@@ -2,7 +2,7 @@
 require('./src/glitch');
 
 //real stuff
-const axios = require('axios');
+// const axios = require('axios');
 const WebSocket = require("ws");
 const { endpoints, autoTemplates } = require('./src/endpoints');
 const ranks = require('./src/ranks');
@@ -20,6 +20,11 @@ reqHttps("undercards.net/SignIn", process.env.LOGINBODY, {
   Host: hostname,
   Origin: "https://" + hostname,
   Referer: "https://" + hostname,
+  Accept: "*/*",
+  "Accept-Encoding": "gzip, deflate, br",
+  "Accept-Language": "en-US,en;q=0.9,es;q=0.8",
+  Connection: "keep-alive",
+  "User-Agent": "Mozilla/5.0 (Windows NT 6.1; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/70.0.3538.110 Safari/537.36",
 }, headers => {
   const setCookie = headers["set-cookie"];
   const auth = setCookie.map(cookie => cookie.split(";")[0]).join("; ") + ";";
@@ -157,5 +162,5 @@ reqHttps("undercards.net/SignIn", process.env.LOGINBODY, {
 });
 
 function post(hook, data) {
-  axios.post(hook, data);
+  reqHttps(hook, data);
 }
