@@ -10,6 +10,7 @@ const ranks = require('./src/ranks');
 const reqHttps = require('./src/https');
 const getMessage = require('./src/getMessage');
 const sendStatus = require('./src/status');
+const chatRecord = require('./src/chat-record');
 
 const templateRegex = /\$(\d+)/g;
 
@@ -69,6 +70,7 @@ reqHttps("undercards.net/SignIn", process.env.LOGINBODY, "application/x-www-form
       const chatMessage = parsedData.chatMessage;
       //let id = chatMessage.id;
       const user = chatMessage.user;
+      chatRecord.add(chatMessage, room);
       //decode html entities sent over and fit to discord
       const { message, username } = getMessage(chatMessage);
       //console.log(id, user.username, message);
@@ -111,7 +113,8 @@ reqHttps("undercards.net/SignIn", process.env.LOGINBODY, "application/x-www-form
         content: endpoint.template.replace(templateRegex, (m, key) => message.hasOwnProperty(key) ? message[key] : ""),
       };
     } else if (parsedData.action === 'deleteMessages') {
-        
+      const ids = parsedData.listId;
+      ids.map((id) => {});
     }
     
     if (output.hook && output.json) {
