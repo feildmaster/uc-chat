@@ -123,6 +123,9 @@ reqHttps("undercards.net/SignIn", process.env.LOGINBODY, "application/x-www-form
     } else if (parsedData.action === 'deleteMessages') {
       const ids = JSON.parse(parsedData.listId);
       const entries = new Map();
+      
+      // TODO: A dedicated mute channel
+
       // Done like this in case they were using multiple channels
       ids.forEach((id) => {
         const data = chatRecord.get(id);
@@ -137,11 +140,11 @@ reqHttps("undercards.net/SignIn", process.env.LOGINBODY, "application/x-www-form
             content: `${cleanString(data.username)}#${data.userid} was muted`,
           }
         });
-        
-        for (const data of entries.values()) {
-          post(data.room, data.message);
-        }
       });
+
+      for (const data of entries.values()) {
+        post(data.room, data.message);
+      }
     }
     
     if (output.hook && output.json) {
