@@ -44,7 +44,7 @@ process.on("beforeExit", unexpectedTermination);
 process.on('SIGINT', () => unexpectedTermination().catch(() => false).then(() => process.exit(1)));
 
 function unexpectedTermination() {
-  return Promise.resolve(safeExit) || sendStatus({
+  return safeExit ? Promise.resolve(safeExit) : sendStatus({
     status: false,
     message: "Unexpected termination"
   });
