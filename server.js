@@ -121,7 +121,7 @@ reqHttps("undercards.net/SignIn", process.env.LOGINBODY, "application/x-www-form
         content: endpoint.template.replace(templateRegex, (m, key) => message.hasOwnProperty(key) ? message[key] : ""),
       };
     } else if (parsedData.action === 'deleteMessages') {
-      const ids = parsedData.listId;
+      const ids = JSON.parse(parsedData.listId);
       const entries = new Map();
       // Done like this in case they were using multiple channels
       ids.forEach((id) => {
