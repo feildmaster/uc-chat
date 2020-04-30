@@ -118,7 +118,7 @@ reqHttps("undercards.net/SignIn", process.env.LOGINBODY, "application/x-www-form
       output.json = {
         username: `${endpoint.title} webhook`,
         avatar_url: 'https://undercards.net/images/souls/DETERMINATION.png',
-        content: endpoint.template.replace(templateRegex, (m, key) => message.hasOwnProperty(key) ? message[key] : ""),
+        content: endpoint.template.replace(templateRegex, (m, key) => message.hasOwnProperty(key) ? cleanString(message[key]) : ""),
       };
     } else if (parsedData.action === 'deleteMessages') {
       const ids = JSON.parse(parsedData.listId);
@@ -134,7 +134,7 @@ reqHttps("undercards.net/SignIn", process.env.LOGINBODY, "application/x-www-form
           message: {
             username: `${endpoint.title || data.room} chat`,
             avatar_url: 'https://undercards.net/images/souls/DETERMINATION.png',
-            content: `${data.username}#${data.userid} was muted`,
+            content: `${cleanString(data.username)}#${data.userid} was muted`,
           }
         });
         
@@ -161,4 +161,8 @@ function post(hook, data) {
   axios.post(hook, data)
     //.then(() => console.log('Sent'))
     .catch((error = {}) => console.error(error.isAxiosError ? error.response : error));
+}
+
+function cleanString(string) {
+  return string.replace(/_/g, '\\_').replace(getMessage.specialCharacters, '\\$1');
 }

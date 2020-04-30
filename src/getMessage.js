@@ -18,4 +18,6 @@ function getMessage({ user, message = '', me }) {
   };
 }
 
+getMessage.specialCharacters = specialCharacters;
+
 module.exports = getMessage;
