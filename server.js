@@ -11,8 +11,14 @@ const reqHttps = require('./src/https');
 const getMessage = require('./src/getMessage');
 const sendStatus = require('./src/status');
 const chatRecord = require('./src/chat-record');
+const Limiter = require('./src/util/rateLimit');
 
+const alertRole = process.env.ALERT_ROLE;
 const templateRegex = /\$(\d+)/g;
+const reportLimits = new Limiter({
+  cooldown: 60000, // 1 minute per user
+  globalCooldown: 30000, // 30 seconds between users
+});
 
 //sign in once
 reqHttps("undercards.net/SignIn", process.env.LOGINBODY, "application/x-www-form-urlencoded; charset=UTF-8", headers => {
@@ -95,9 +101,7 @@ reqHttps("undercards.net/SignIn", process.env.LOGINBODY, "application/x-www-form
         ]
       };
       
-      const alertRole = process.env.ALERT_ROLE;
-      if (alertRole && message.toLowerCase().startsWith('@report')) {
-        // TODO: Rate limit command
+      if (alertRole && message.toLowerCase().startsWith('@report') && reportLimits.check(user.id)) {
         output.json.content = alertRole;
       }
     } else if (parsedData.action === 'getMessageBroadcast') {
