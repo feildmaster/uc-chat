@@ -1,24 +1,20 @@
 // Static value
 class Value {
-  constructor(name, value) {
-    this.n = name;
+  constructor(value) {
     this.set(value);
   }  
   
   set(value) {
     this.val = value;
+    return this;
   }
-  
-  get value() {
+
+  get() {
     return this.val;
   }
   
-  get key() {
-    return this.n;
-  }
-  
   toString() {
-    return `[${this.name}] ${this.key}: ${this.value}`;
+    return `[${this.name}] ${this.value}`;
   }
 }
 

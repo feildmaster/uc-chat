@@ -2,16 +2,16 @@
 const Value = require ('./value');
 
 class Counter extends Value {
-  constructor(name, value = 0) {
-    super(name, value);
+  constructor(value = 0) {
+    super(value);
   }
   
   increment(step = 1) {
-    this.set(this.value + step);
+    return this.set(this.get() + step);
   }
   
-  add() {
-    this.increment();
+  add(count = 1) {
+    return this.increment(count);
   }
 }
 
