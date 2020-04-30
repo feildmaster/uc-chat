@@ -33,7 +33,7 @@ function reqHttps(url, body, type, callback) {
         const message = 'Server unavailable';
         status({message, status: false}).catch(() => false).then(() => {
           console.error(message);
-          process.exit();
+          process.exit(1);
         });
       }
       callback(res.headers);
