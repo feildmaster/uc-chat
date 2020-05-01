@@ -37,6 +37,11 @@ class Group extends Value {
     }
     return ret;
   }
+
+  clear() {
+    this.value.clear();
+    return this;
+  }
 }
 
 module.exports = Group;

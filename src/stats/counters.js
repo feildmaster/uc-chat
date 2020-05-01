@@ -21,6 +21,10 @@ class Counters extends Group {
     return counter;
   }
 
+  total() {
+    return this.all().reduce((total, counter) => total + counter.get());
+  }
+
   top(count = 1) {
     return this.all()
       .sort((a, b) => b.value - a.value)
