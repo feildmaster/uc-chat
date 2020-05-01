@@ -6,40 +6,47 @@ class Group extends Value {
     super(new Map());
   }
 
-  /* Override, set "value" once */
-  set(value) {
-    if (!this.val) super.set(value);
+  /* Can not change interal map */
+  set(key, value) {
+    if (key && value) {
+      super.get().set(key, value);
+    }
     return this;
   }
 
   has(key) {
-    return this.value.has(key);
+    return super.get().has(key);
   }
 
   add(key, value) {
     if (this.has(key)) {
-      console.warn('Duplicate key', key);
-    } else {
-      this.value.set(key, value);
+      console.warn('Duplicate key:', key);
+    }
+    return this.set(key, value);
+  }
+
+  remove(key) {
+    if (this.has(key)) {
+      super.get().delete(key);
     }
     return this;
   }
 
   get(name) {
     if (!name) throw new Error('Name not provided');
-    return this.value.get(name);
+    return super.get().get(name);
   }
 
   all() {
     const ret = [];
-    for (const counter of this.value.values()) {
+    for (const counter of super.get().values()) {
       ret.push(counter);
     }
     return ret;
   }
 
   clear() {
-    this.value.clear();
+    super.get().clear();
     return this;
   }
 }

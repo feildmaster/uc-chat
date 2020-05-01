@@ -6,34 +6,33 @@ const Counters = require('./counters');
 
 const registry = new Group();
 
-exports.has = (name) => registry.has(name);
-
-exports.clear = () => registry.clear();
-
-exports.value = (name, value) => {
-  if (this.has(name)) return registry.get(name);
+// Should these just be a part of group?
+registry.value = function(name, value) {
+  if (this.has(name)) return this.get(name);
   const ret = new Value(value);
-  registry.add(name, ret)
+  this.add(name, ret)
   return ret;
 };
 
-exports.counter = (name, value) => {
-  if (this.has(name)) return registry.get(name);
+registry.counter = function(name, value) {
+  if (this.has(name)) return this.get(name);
   const ret = new Counter(value);
-  registry.add(name, ret)
+  this.add(name, ret)
   return ret;
 };
 
-exports.group = (name) => {
-  if (this.has(name)) return registry.get(name);
+registry.group = function(name) {
+  if (this.has(name)) return this.get(name);
   const value = new Group();
-  registry.add(name, value)
+  this.add(name, value)
   return value;
 };
 
-exports.counters = (name) =>  {
-  if (this.has(name)) return registry.get(name);
+registry.counters = function(name) {
+  if (this.has(name)) return this.get(name);
   const value = new Counters();
-  registry.add(name, value)
+  this.add(name, value)
   return value;
 };
+
+module.exports = registry;

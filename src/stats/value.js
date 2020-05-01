@@ -1,7 +1,7 @@
 // Static value
 class Value {
   constructor(value) {
-    this.set(value);
+    this.val = value;
   }  
   
   set(value) {
@@ -11,10 +11,6 @@ class Value {
 
   get() {
     return this.val;
-  }
-  
-  toString() {
-    return `[${this.name}] ${this.value}`;
   }
 }
 
