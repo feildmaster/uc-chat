@@ -6,6 +6,10 @@ class Group extends Value {
     super(new Map());
   }
 
+  get size() {
+    return super.get().size;
+  }
+
   /* Can not change interal map */
   set(key, value) {
     if (key && value) {
@@ -39,7 +43,7 @@ class Group extends Value {
 
   all() {
     const ret = [];
-    for (const counter of super.get().values()) {
+    for (const counter of super.get().values()) { // You lose keys here
       ret.push(counter);
     }
     return ret;

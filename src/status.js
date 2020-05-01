@@ -1,9 +1,15 @@
 const axios = require("axios");
 const prettyDuration = require('pretty-ms');
+const stats = require('./stats');
+// const emoji = require('./discordEmoji');
 
 // process.env.PROJECT_DOMAIN (https://api.glitch.com/v1/projects/by/domain?domain={PROJECT_DOMAIN})
 
 const endpoint = process.env.WEBHOOK_STATUS;
+
+// const popular = stats.counters('emoji');
+// const missing = stats.counters('emojiMissing');
+// const missingGif = stats.counters('emojiMissingAnimated');
 
 let safeExit = false;
 
@@ -21,13 +27,20 @@ function sendStatus({
   if (message) embed.description = message;
   
   function stat(name, value, inline = true) {
-    embed.fields.push({ name: `❯ ${name}`, value, inline });
+    if (name && value) embed.fields.push({ name: `❯ ${name}`, value, inline });
   }
   
   stat('Status', status ? "online" : "offline");
   stat('Uptime', prettyDuration(process.uptime() * 1000, {
     secondsDecimalDigits: 0,
   }));
+  stat('Messages', stats.counters('messages').total());
+
+  // stat('Top Emoji', popular.top(5).map((a))); // Well crap, I don't know the image name
+  // stat('Least Used Emoji', popular.top(5).map((a))); // Well crap, I don't know the image name
+  // stat('Upload Candidates (png)', missing.top(5).map((a))); // Well crap, I don't know the image name
+  // stat('Upload Candidates (gif)', missingGif.top(5).map((a))); // Well crap, I don't know the image name
+
   
   // TODO: More stats
 

@@ -11,6 +11,7 @@ const getMessage = require('./src/getMessage');
 const sendStatus = require('./src/status');
 const chatRecord = require('./src/util/chat-record');
 const Limiter = require('./src/util/cooldown');
+const stats = require('./src/stats');
 
 const alertRole = process.env.ALERT_ROLE;
 const templateRegex = /\$(\d+)/g;
@@ -73,6 +74,7 @@ reqHttps("undercards.net/SignIn", process.env.LOGINBODY, "application/x-www-form
       const endpoint = endpoints[room] || {};
       if (!endpoint.hook) return; // This is just a fail-safe
       // console.log('Received message');
+      stats.counters('messages').get(room).increment();
       const chatMessage = JSON.parse(parsedData.chatMessage);
       //let id = chatMessage.id;
       const user = chatMessage.user;
