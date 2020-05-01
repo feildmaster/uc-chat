@@ -22,7 +22,7 @@ class Counters extends Group {
   }
 
   total() {
-    return this.all().reduce((total, counter) => total + counter.get());
+    return this.all().reduce((total, counter) => total + counter.get(), 0);
   }
 
   top(count = 1) {
