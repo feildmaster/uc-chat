@@ -27,13 +27,13 @@ class Counters extends Group {
 
   top(count = 1) {
     return this.all()
-      .sort((a, b) => b.value - a.value)
+      .sort((a, b) => b.get() - a.get())
       .slice(0, count);
   }
 
   last(count = 1) {
     return this.all()
-      .sort((a, b) => a.value - b.value)
+      .sort((a, b) => a.get() - b.get())
       .slice(0, count);
   }
 }

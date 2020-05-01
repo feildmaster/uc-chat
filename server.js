@@ -108,6 +108,7 @@ reqHttps("undercards.net/SignIn", process.env.LOGINBODY, "application/x-www-form
     } else if (parsedData.action === 'getMessageBroadcast') {
       const endpoint = process.env.WEBHOOK_INFO;
       if (!endpoint) return;
+      stats.counters('messages').get('broadcast').increment();
       output.hook = endpoint;
       output.json = {
         username: 'info-chan',
@@ -118,6 +119,7 @@ reqHttps("undercards.net/SignIn", process.env.LOGINBODY, "application/x-www-form
       const message = JSON.parse(JSON.parse(parsedData.message).args);
       const endpoint = autoTemplates[message[0]];
       if (!endpoint || !endpoint.hook) return;
+      stats.counters('messages').get(endpoint.title).increment();
       // console.log('Received message type', message[0]);
       output.hook = endpoint.hook;
       output.json = {
@@ -128,6 +130,8 @@ reqHttps("undercards.net/SignIn", process.env.LOGINBODY, "application/x-www-form
     } else if (parsedData.action === 'deleteMessages') {
       const ids = JSON.parse(parsedData.listId);
       const entries = new Map();
+      
+      stats.counters('messages').get('deletion').increment();
       
       // TODO: A dedicated mute channel
 
@@ -151,6 +155,10 @@ reqHttps("undercards.net/SignIn", process.env.LOGINBODY, "application/x-www-form
         post(data.room, data.message);
       }
     }
+
+    if (stats.counters('messages').total() % 500) {
+      sendStatus();
+    }
     
     if (output.hook && output.json) {
       post(output.hook, output.json);
@@ -166,6 +174,7 @@ reqHttps("undercards.net/SignIn", process.env.LOGINBODY, "application/x-www-form
 function post(hook, data) {
   // TODO: Message queue for rate limits
   //console.log('Sending message');
+  stats.counter('sent').increment();
   axios.post(hook, data)
     //.then(() => console.log('Sent'))
     .catch((error = {}) => console.error(error.isAxiosError ? error.response : error));
