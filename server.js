@@ -3,15 +3,14 @@ require('./src/glitch');
 
 //real stuff
 const axios = require('axios');
-// const { deepParseJson: parseJSON } = require('deep-parse-json');
 const WebSocket = require("ws");
 const { endpoints, autoTemplates } = require('./src/endpoints');
-const ranks = require('./src/ranks');
+const ranks = require('./src/undercardsRanks');
 const reqHttps = require('./src/https');
 const getMessage = require('./src/getMessage');
 const sendStatus = require('./src/status');
-const chatRecord = require('./src/chat-record');
-const Limiter = require('./src/util/rateLimit');
+const chatRecord = require('./src/util/chat-record');
+const Limiter = require('./src/util/cooldown');
 
 const alertRole = process.env.ALERT_ROLE;
 const templateRegex = /\$(\d+)/g;

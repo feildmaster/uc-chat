@@ -1,106 +1,58 @@
-module.exports = {
-  // https://undercards.net/images/emotes/
-  'Asriel_Cry': '<:Asriel_Cry:704053799513489439>',
-  'T_Pose': '<:T_Pose:704363739243217036>',
-  'Frisk_Meh': '',
-  'Processing_Flowey': '',
-  'Chara_Stop': '',
-  'Shy_Chara': '',
-  '': '',
-  '': '',
-  '': '',
-  '': '',
-  '': '',
-  '': '',
-  '': '',
-  '': '',
-  '': '',
-  '': '',
-  '': '',
-  '': '',
-  '': '',
-  '': '',
-  '': '',
-  '': '',
-  '': '',
-  '': '',
-  '': '',
-  '': '',
-  '': '',
-  '': '',
-  '': '',
-  'Chara_Huh': '<:Chara_Huh:705361092100227124>',
-  'Angry_Mad_Dummy': '',
-  'Asriel_Yes': '',
-  'Chara_No': '',
-  'Happy_Greater_Dog': '',
-  'Surprised_Alphys': '',
-  'Sansger': '',
-  'Mettatowo': '',
-  'Ping_Pon': '',
-  'Smirkriel': '<:Smirkriel:704662232138645506>',
-  'Susie_Creepy': '',
-  'Omega_Stare': '<:Omega_Stare:704661071599894569>',
-  'Diabolic_Kris': '',
-  'Snail_Fury': '',
-  'Mocking_Frisk': '<:Mocking_Frisk:704652512673792006>',
-  'Oh_Yes': '<:Oh_Yes:704662150458638376>',
-  'Flowey_What': '<:Flowey_What:704660534049636432>',
-  'Disturbed_Burger_Pants': '',
-  'Winking_Papyrus': '<:Winking_Papyrus:704660451509665832>',
-  'Undyne_LUL': '<:Undyne_LUL:704660777075736657>',
-  'This_is_fine': '<:This_is_fine:704662271648989314>',
-  
-  
-  // Gifs
-  'Bad_Time': '<a:Bad_Time:704662119211204648>',
-  'Frisk_Hello': '<a:Frisk_Hello:704660898819604491>',
-  'Frisk_Tears': '<a:Frisk_Tears:705368192750452738>',
-  'Intensive_Asriel': '<a:Intensive_Asriel:705368116997390346>',
-  'Frisk_Clap': '<a:Frisk_Clap:704660866158690375>',
-  'Angry_Paps': '<a:Angry_Paps:704662014395416576>',
-  'Wheevil': '<a:Wheevil:704364078570799134>',
-  'Apoca_What': '<a:Apoca_What:704662014395416576>',
-  'zzz': '<a:zzz:704688349587439627>',
-  'Thinking_Asriel': '<a:Thinking_Asriel:704661971693469716>',
-  'Confused_Lost_Sans': '<a:Confused_Lost_Sans:704661648379478066>',
-  '': '',
-  '': '',
-  '': '',
-  '': '',
-  '': '',
-  '': '',
-  '': '',
-  '': '',
-  '': '',
-  '': '',
-  '': '',
-  '': '',
-  '': '',
-  '': '',
-  '': '',
-  '': '',
-  '': '',
-  '': '',
-  '': '',
-  '': '',
-  '': '',
-  '': '',
-  '': '',
-  '': '',
-  '': '',
-  '': '',
-  '': '',
-  '': '',
-  '': '',
-  '': '',
-  '': '',
-  '': '',
-  '': '',
-  '': '',
-  '': '',
-  '': '',
-  '': '',
-  '': '',
-  '': '',
-};
+// https://undercards.net/images/emotes/NAME.EXT
+const emoji = {};
+
+function add({ key, id, name, animated }) {
+  if (!id) return;
+  emoji[key] = `<${animated?'a':''}:${name || key}:${id}>`;
+}
+
+function png(key, id, name) {
+  add({ key, id, name });
+}
+
+function gif(key, id, name) {
+  add({ key, id, name, animated: true });
+}
+
+png('Asriel_Cry', '704053799513489439');
+png('T_Pose', '704363739243217036');
+png('Mocking_Frisk', '704652512673792006');
+png('Oh_Yes', '704662150458638376');
+png('Flowey_What', '704660534049636432');
+png('Winking_Papyrus', '704660451509665832');
+png('Undyne_LUL', '704660777075736657');
+png('This_is_fine', '704662271648989314');
+png('Chara_Huh', '705361092100227124');
+png('Smirkriel', '704662232138645506');
+png('Omega_Stare', '704661071599894569');
+png('Frisk_Meh', '');
+png('Processing_Flowey', ''),
+png('Chara_Stop', '');
+png('Shy_Chara', '');
+png('Angry_Mad_Dummy', '');
+png('Asriel_Yes', '');
+png('Chara_No', '');
+png('Happy_Greater_Dog', '');
+png('Surprised_Alphys', '');
+png('Sansger', '');
+png('Mettatowo', '');
+png('Ping_Pon', '');
+png('Susie_Creepy', '');
+png('Diabolic_Kris', '');
+png('Snail_Fury', '');
+png('Disturbed_Burger_Pants', '');
+
+// Gifs
+gif('Bad_Time', '704662119211204648');
+gif('Frisk_Hello', '704660898819604491');
+gif('Frisk_Tears', '705368192750452738');
+gif('Intensive_Asriel', '705368116997390346');
+gif('Frisk_Clap', '704660866158690375');
+gif('Angry_Paps', '704662014395416576');
+gif('Wheevil', '704364078570799134');
+gif('Apoca_What', '704662014395416576');
+gif('zzz', '704688349587439627');
+gif('Thinking_Asriel', '704661971693469716');
+gif('Confused_Lost_Sans', '704661648379478066');
+
+module.exports = emoji;

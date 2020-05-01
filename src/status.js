@@ -44,6 +44,7 @@ process.on("beforeExit", unexpectedTermination);
 process.on('SIGINT', () => unexpectedTermination().catch(() => false).then(() => process.exit(1)));
 
 function unexpectedTermination() {
+  console.log('Unexpected Terminaton'); // Does this even get called?
   return safeExit ? Promise.resolve(safeExit) : sendStatus({
     status: false,
     message: "Unexpected termination"
