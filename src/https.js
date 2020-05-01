@@ -28,10 +28,10 @@ function reqHttps(url, body, type, callback) {
     if (callback) {
       if (res.statusCode !== 302 && res.statusCode !== 200) { // Redirect to quests
         const message = 'Server unavailable';
-        return status({message, status: false}).catch(() => false).then(() => {
+        // return status({message, status: false}).catch(() => false).then(() => {
           console.error(message);
           process.exit(1);
-        });
+        // });
       }
       callback(res.headers);
     }
