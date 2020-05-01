@@ -17,7 +17,6 @@ function reqHttps(url, body, type, callback) {
       Connection: "keep-alive",
       "Content-Type": type,
       "Content-Length": body ? body.length : 0,
-      //Cookie: cookie,
       Host: hostname,
       Origin: "https://" + hostname,
       Referer: "https://" + hostname,
@@ -26,25 +25,16 @@ function reqHttps(url, body, type, callback) {
     }
   };
   const req = https.request(options, res => {
-    //console.log("statusCode:", res.statusCode);
-    //console.log("headers:", res.headers);
     if (callback) {
       if (res.statusCode !== 302 && res.statusCode !== 200) { // Redirect to quests
         const message = 'Server unavailable';
-        status({message, status: false}).catch(() => false).then(() => {
+        return status({message, status: false}).catch(() => false).then(() => {
           console.error(message);
           process.exit(1);
         });
       }
       callback(res.headers);
     }
-    /*let total = "";
-    res.on("data", d => {
-      total += d;
-    });
-    res.on("end", () => {
-      callback ? callback(total) : null;
-    });*/
   });
   //req.on("error", console.error.bind(console));
   if (body) req.write(body);
