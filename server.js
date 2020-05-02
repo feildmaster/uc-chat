@@ -138,6 +138,7 @@ reqHttps("undercards.net/SignIn", process.env.LOGINBODY, "application/x-www-form
       // Done like this in case they were using multiple channels
       ids.forEach((id) => {
         const data = chatRecord.get(id);
+        if (!data) return;
         const key = `${data.room}_${data.userid}`;
         if (entries.has(key)) return;
         const endpoint = endpoints[data.room];
