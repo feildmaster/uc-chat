@@ -6,8 +6,10 @@ app.use(express.static("public"));
 app.get("/", (request, response) => {
   response.send("oof");
 });
-app.get("/status", (req, res) => status().catch(() => false).then((sent) => {
-  res.send(sent ? 'Sent' : 'oof');
+app.get("/status", (req, res) => status().then(() => {
+  res.send('Sent');
+}).catch((error) => {
+  res.send(error);
 }));
 if (process.env.PORT) {
   const listener = app.listen(process.env.PORT, () => {

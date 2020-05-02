@@ -156,13 +156,13 @@ reqHttps("undercards.net/SignIn", process.env.LOGINBODY, "application/x-www-form
         post(data.room, data.message);
       }
     }
-
-    if (stats.counters('messages').total() % 500) {
-      sendStatus();
-    }
     
     if (output.hook && output.json) {
       post(output.hook, output.json);
+    }
+
+    if (stats.counters('messages').total() % 500) {
+      sendStatus();
     }
   });
   
