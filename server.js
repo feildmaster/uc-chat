@@ -162,8 +162,9 @@ reqHttps("undercards.net/SignIn", process.env.LOGINBODY, "application/x-www-form
       post(output.hook, output.json);
     }
 
-    if (stats.counters('messages').total() % 500 === 0) {
-      sendStatus();
+    const msgs = stats.counters('messages').total();
+    if (msgs && (msgs % 500 === 0)) {
+      sendStatus().catch(() => {});
     }
   });
   
