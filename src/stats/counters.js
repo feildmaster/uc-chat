@@ -16,7 +16,7 @@ class Counters extends Group {
       return super.get(name);
     }
 
-    const counter = new Counter(name);
+    const counter = new Counter();
     this.add(name, counter);
     return counter;
   }
