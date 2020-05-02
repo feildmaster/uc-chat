@@ -12,6 +12,7 @@ const sendStatus = require('./src/status');
 const chatRecord = require('./src/util/chat-record');
 const Limiter = require('./src/util/cooldown');
 const stats = require('./src/stats');
+const Discord = require('discord.io');
 
 const alertRole = process.env.ALERT_ROLE;
 const templateRegex = /\$(\d+)/g;
@@ -161,7 +162,7 @@ reqHttps("undercards.net/SignIn", process.env.LOGINBODY, "application/x-www-form
       post(output.hook, output.json);
     }
 
-    if (stats.counters('messages').total() % 500) {
+    if (stats.counters('messages').total() % 500 === 0) {
       sendStatus();
     }
   });
@@ -184,3 +185,22 @@ function post(hook, data) {
 function cleanString(string) {
   return string.replace(/_/g, '\\_').replace(getMessage.specialCharacters, '\\$1');
 }
+
+//completely unrelated section of code relating to monitoring the discord server
+var bot = new Discord.Client({
+    token: "",
+    autorun: true
+});
+ 
+bot.on('ready', function() {
+    console.log('Logged in as %s - %s\n', bot.username, bot.id);
+});
+ 
+bot.on('message', function(user, userID, channelID, message, event) {
+    if (message === "ping") {
+        bot.sendMessage({
+            to: channelID,
+            message: "pong"
+        });
+    }
+});
