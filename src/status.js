@@ -34,7 +34,7 @@ function sendStatus({
   stat('Uptime', prettyDuration(process.uptime() * 1000, {
     secondsDecimalDigits: 0,
   }));
-  stat('Messages', `Processed: ${stats.counters('messages').total()}\nSent: ${stats.counter('sent').get()}`);
+  stat('Messages', `Incoming: ${stats.counters('messages').get('incoming').get()}\nOutgoing: ${stats.counters('messages').get('outgoing').get()}`);
 
   // stat('Top Emoji', popular.top(5).map((a))); // Well crap, I don't know the image name
   // stat('Least Used Emoji', popular.top(5).map((a))); // Well crap, I don't know the image name
