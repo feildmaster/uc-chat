@@ -52,7 +52,7 @@ function sendStatus({
   }).then(() => true);
 }
 
-process.on("beforeExit", unexpectedTermination);
+process.on("exit", unexpectedTermination);
 
 process.on('SIGINT', () => unexpectedTermination().catch(() => false).then(() => process.exit(1)));
 
