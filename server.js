@@ -139,12 +139,23 @@ reqHttps("undercards.net/SignIn", process.env.LOGINBODY, "application/x-www-form
         const key = `${data.room}_${data.userid}`;
         if (entries.has(key)) return;
         const endpoint = endpoints[data.room];
+        const msg = `${cleanString(data.username)}#${data.userid} was muted`;
+        if (process.env.WEBHOOK_MUTED) {
+          entries.set(`muted_${data.userid}`, {
+            room: process.env.WEBHOOK_MUTED,
+            message: {
+              username: `Mute log`,
+              avatar_url: 'https://undercards.net/images/souls/DETERMINATION.png',
+              content: msg,
+            },
+          });
+        }
         entries.set(key, {
           room: endpoint.hook,
           message: {
             username: `${endpoint.title || data.room} chat`,
             avatar_url: 'https://undercards.net/images/souls/DETERMINATION.png',
-            content: `${cleanString(data.username)}#${data.userid} was muted`,
+            content: msg,
           }
         });
       });
