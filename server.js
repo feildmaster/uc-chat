@@ -168,11 +168,6 @@ reqHttps("undercards.net/SignIn", process.env.LOGINBODY, "application/x-www-form
     if (output.hook && output.json) {
       post(output.hook, output.json);
     }
-
-    const msgs = stats.counters('messages').total();
-    if (msgs && (msgs % 500 === 0)) {
-      sendStatus().catch(() => {});
-    }
   });
   
   process.on('exit', () => {

@@ -12,6 +12,7 @@ const endpoint = process.env.WEBHOOK_STATUS;
 // const missingGif = stats.counters('emojiMissingAnimated');
 
 let safeExit = false;
+let count = 0;
 
 function sendStatus({
   status = true,
@@ -65,3 +66,15 @@ function unexpectedTermination() {
 }
 
 module.exports = sendStatus;
+
+setInterval(() => {
+  count += 1;
+  const disconnect = count > 20;
+  sendStatus({
+    status: !disconnect,
+  }).catch(() => {}).then(() => {
+    if (disconnect) {
+      process.exit(1);
+    }
+  });
+}, 30 * 60000);
