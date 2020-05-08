@@ -6,7 +6,7 @@ const specialCharacters = /([`|*~]|^>)/g;
 const emoteRegex = /:[^\s:]+(?:\\_[^\s_:]+)+:/g;
 
 function getMessage({ user, message = '', me }) {
-  let safeMessage = entities.decode(parseMessageEmotes(message.replace(/_/g, '\\_'))) // Scrub underscores
+  let safeMessage = decode(parseMessageEmotes(message.replace(/_/g, '\\_'))) // Scrub underscores
     .replace(emoteRegex, (match) => match.replace(/\\/g, '')) // Allow default emoji, because it's cute
     .replace(specialCharacters, '\\$1'); // Scrub discord characters
   if (me) {
@@ -14,10 +14,16 @@ function getMessage({ user, message = '', me }) {
   }
   return {
     message: safeMessage,
-    username: entities.decode(user.username),
+    username: decode(user.username),
   };
 }
 
+function decode(text = '') {
+  return entities.decode(text);
+}
+
 getMessage.specialCharacters = specialCharacters;
+
+getMessage.decode = decode; 
 
 module.exports = getMessage;

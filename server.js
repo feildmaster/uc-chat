@@ -138,7 +138,7 @@ reqHttps("undercards.net/SignIn", process.env.LOGINBODY, "application/x-www-form
         const key = `${data.room}_${data.userid}`;
         if (entries.has(key)) return;
         const endpoint = endpoints[data.room];
-        const msg = `${cleanString(data.username)}#${data.userid} was muted`;
+        const msg = `${cleanString(getMessage.decode(data.username))}#${data.userid} was muted`;
         if (process.env.WEBHOOK_MUTED) {
           entries.set(`muted_${data.userid}`, {
             room: process.env.WEBHOOK_MUTED,
