@@ -12,7 +12,6 @@ const sendStatus = require('./src/status');
 const chatRecord = require('./src/util/chat-record');
 const Limiter = require('./src/util/cooldown');
 const stats = require('./src/stats');
-const Discord = require('discord.io');
 
 const alertRole = process.env.ALERT_ROLE;
 const templateRegex = /\$(\d+)/g;
@@ -188,22 +187,3 @@ function post(hook, data) {
 function cleanString(string) {
   return string.replace(/_/g, '\\_').replace(getMessage.specialCharacters, '\\$1');
 }
-
-//completely unrelated section of code relating to monitoring the discord server
-const bot = new Discord.Client({
-    token: process.env.DISCORD_BOT_TOKEN,
-    autorun: true
-});
- 
-bot.on('ready', function() {
-    console.log('Logged in as %s - %s', bot.username, bot.id);
-});
- 
-bot.on('message', function(user, userID, channelID, message, event) {
-    if (message === "ping") {
-        bot.sendMessage({
-            to: channelID,
-            message: "pong"
-        });
-    }
-});
