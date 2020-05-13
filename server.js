@@ -20,10 +20,6 @@ const reportLimits = new Limiter({
   globalCooldown: 30000, // 30 seconds between users
 });
 
-if (true) {
-  process.exit(0);
-}
-
 //sign in once
 reqHttps("undercards.net/SignIn", process.env.LOGINBODY, "application/x-www-form-urlencoded; charset=UTF-8", headers => {
   const setCookie = headers["set-cookie"];
