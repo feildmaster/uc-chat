@@ -1,27 +1,31 @@
 const axios = require("axios");
 const prettyDuration = require('pretty-ms');
 const stats = require('./stats');
+const bot = require('./bot');
 // const emoji = require('./discordEmoji');
 
 // process.env.PROJECT_DOMAIN (https://api.glitch.com/v1/projects/by/domain?domain={PROJECT_DOMAIN})
 
-const endpoint = process.env.WEBHOOK_STATUS;
+const endpoint = {
+  hook: process.env.WEBHOOK_STATUS,
+  chan: process.env.CHANNEL_STATUS,
+};
 
-// const popular = stats.counters('emoji');
-// const missing = stats.counters('emojiMissing');
-// const missingGif = stats.counters('emojiMissingAnimated');
+const popular = stats.counters('emoji');
+const missing = stats.counters('emojiMissing');
+const missingGif = stats.counters('emojiMissingAnimated');
 
 let safeExit = false;
 let count = 0;
 
 function sendStatus({
-  status = true,
+  shuttingDown = false,
   message,
   error,
 } = {}) {
-  if (!endpoint || safeExit) return Promise.resolve(false);
+  if (!(endpoint.chan || endpoint.hook) || safeExit) return Promise.resolve(false);
 
-  safeExit = !status;
+  safeExit = shuttingDown;
 
   const embed = { fields: [] };
   
@@ -31,36 +35,36 @@ function sendStatus({
     if (name && value) embed.fields.push({ name: `❯ ${name}`, value, inline });
   }
   
-  stat('Status', status ? "online" : "offline");
+  stat('Status', bot.connected() ? 'online' : 'offline');
   stat('Uptime', prettyDuration(process.uptime() * 1000, {
     secondsDecimalDigits: 0,
   }));
-  stat('Messages', `Incoming: ${stats.counters('messages').get('incoming').get()}\nOutgoing: ${stats.counters('messages').get('outgoing').get()}`);
-
-  // stat('Top Emoji', popular.top(5).map((a))); // Well crap, I don't know the image name
-  // stat('Least Used Emoji', popular.top(5).map((a))); // Well crap, I don't know the image name
-  // stat('Upload Candidates (png)', missing.top(5).map((a))); // Well crap, I don't know the image name
-  // stat('Upload Candidates (gif)', missingGif.top(5).map((a))); // Well crap, I don't know the image name
-
   
+  stat('Messages', `Incoming: ${stats.counters('messages').get('incoming').get()}\nOutgoing: ${stats.counters('messages').get('outgoing').get()}`, false);
+
+  stat('Top Emoji', popular.top(5).map((a) => `${a.name} x${a.get()}`).join('\n'));
+  stat('Least Used Emoji', popular.last(5).map((a) => `${a.name} x${a.get()}`).join('\n'));
+  stat('Upload Candidates (png)', missing.top(5).map((a) => `${a.name} x${a.get()}`).join('\n'));
+  stat('Upload Candidates (gif)', missingGif.top(5).map((a) => `${a.name} x${a.get()}`).join('\n'));
+
   // TODO: More stats
 
   if (error) stat('Error', error.message, false);
 
-  return axios.post(endpoint, {
+  return bot.post(endpoint, {
     avatar_url: "https://undercards.net/images/souls/DETERMINATION.png",
-    embeds: [embed]
+    embed,
   }).then(() => true);
 }
 
-process.on("exit", unexpectedTermination);
+process.on('exit', unexpectedTermination);
 
 process.on('SIGINT', () => unexpectedTermination().catch(() => false).then(() => process.exit(1)));
 
 function unexpectedTermination() {
   console.log('Unexpected Terminaton'); // Does this even get called?
   return safeExit ? Promise.resolve(safeExit) : sendStatus({
-    status: false,
+    shuttingDown: true,
     message: "Unexpected termination"
   });
 }
@@ -70,9 +74,13 @@ module.exports = sendStatus;
 setInterval(() => {
   count += 1;
   const disconnect = count > 20;
-  sendStatus({
-    status: !disconnect,
-  }).catch(() => {}).then(() => {
+  const status = {
+    shuttingDown: disconnect,
+  };
+  if (disconnect) {
+    status.message = 'Disconnecting';
+  }
+  sendStatus(status).catch(() => {}).then(() => {
     if (disconnect) {
       process.exit(1);
     }

@@ -7,7 +7,7 @@ const popular = stats.counters('emoji');
 const missing = stats.counters('emojiMissing');
 const missingGif = stats.counters('emojiMissingAnimated');
 
-function parseMessageEmotes(message) {
+function parseMessageEmotes(message = '') {
   //images are displayed to the web browser as <img src="images/emotes/Disturbed_Burger_Pants.png" />
   const parsedMessage = message.replace(emoteRegex, (match, $1, $2) => {
     const emote = $1.replace(/\\/g, '');

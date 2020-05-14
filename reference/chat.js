@@ -153,7 +153,7 @@ function onMessageChat(event) {
             var user = chatHistory[i].user;
             var mainGroup = user.mainGroup.name;
             var icons = "";
-//okay this is some onucode at its finest wtf nvm what I said about onu's code being readable
+// okay this is some onucode at its finest wtf nvm what I said about onu's code being readable (spin)
             for (var j = user.groups.length - 1; j >= 0; j--) {
                 var userGroup = user.groups[j];
                 if (userGroup.icon !== undefined) {
