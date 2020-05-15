@@ -225,6 +225,11 @@ if (process.env.DEBUG === 'true') {
 undercards.connect();
 discord.connect();
 
+process.on('exit', () => {
+  undercards.disconnect();
+  discord.disconnect();
+});
+
 module.exports = {
   undercards,
   discord,
