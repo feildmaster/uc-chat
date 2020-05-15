@@ -42,8 +42,10 @@ function sendStatus({
   
   stat('Messages', `Incoming: ${stats.counters('messages').get('incoming').get()}\nOutgoing: ${stats.counters('messages').get('outgoing').get()}`, false);
 
-  stat('Top Emoji', popular.top(5).map((a) => `${a.name} x${a.get()}`).join('\n'));
-  stat('Least Used Emoji', popular.last(5).map((a) => `${a.name} x${a.get()}`).join('\n'));
+  if (popular.total()) {
+    stat('Top Emoji', popular.top(5).map((a) => `${a.name} x${a.get()}`).join('\n'));
+    stat('Least Used Emoji', popular.last(5).map((a) => `${a.name} x${a.get()}`).join('\n'));
+  }
   stat('Upload Candidates (png)', missing.top(5).map((a) => `${a.name} x${a.get()}`).join('\n'));
   stat('Upload Candidates (gif)', missingGif.top(5).map((a) => `${a.name} x${a.get()}`).join('\n'));
 
