@@ -142,7 +142,7 @@ undercards.on('connect', () => { // Join rooms
 }).on('error', (err) => {
   console.error('Connection error:', err);
 }).on('error/login', (res) => {
-  console.error('Server unavailable', res);
+  console.error('Server unavailable');
   // Retry connection after 5 seconds
   reconnectUC(5000);
 }).on('error/timeout', () => {
