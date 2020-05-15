@@ -5,6 +5,8 @@ require('./src/glitch');
 require('./src/bot');
 
 const fs = require('fs');
+const { inspect } = require('util');
+
 const dir = `./.data/logs`;
 
 function saveLog(data) { // If we're saving a log we're exiting anyway, so sync is fine
@@ -12,18 +14,18 @@ function saveLog(data) { // If we're saving a log we're exiting anyway, so sync 
     fs.mkdirSync(dir, { recursive: true });
   }
   const filename = `${dir}/${Date.now()}.txt`;
-  fs.writeFileSync(filename, data);
+  fs.writeFileSync(filename, inspect(data));
   return filename;
 }
 
 process.on('uncaughtException', (error = {}) => {
-  const filename = saveLog(`[uncaughtException] ${error.stack || error}`);
+  const filename = saveLog(error);
   console.log(`Uncaught Exception, see: ${filename}`);
   process.exit(1);
 });
 
-process.on('unhandledRejection', (error) => {
-  const filename = saveLog(`[unhandledRejection] ${error.stack || error}`);
+process.on('unhandledRejection', (_, promise) => {
+  const filename = saveLog(promise);
   console.log(`Uncaught Rejection, see: ${filename}`);
   process.exit(1);
 });
