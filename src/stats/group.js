@@ -2,8 +2,8 @@ const Value = require('./value');
 
 // Group of Values
 class Group extends Value {
-  constructor() {
-    super(new Map());
+  constructor(name) {
+    super(new Map(), name);
   }
 
   get size() {

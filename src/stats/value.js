@@ -1,7 +1,8 @@
 // Static value
 class Value {
-  constructor(value) {
+  constructor(value, name) {
     this.val = value;
+    this.name = name;
   }  
   
   set(value) {

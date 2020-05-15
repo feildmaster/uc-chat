@@ -11,12 +11,12 @@ class Counters extends Group {
   }
 
   get(name) {
-    if (!name) throw new Error('Name not provided');
+    if (!name) return this.total();
     if (this.has(name)) {
       return super.get(name);
     }
 
-    const counter = new Counter();
+    const counter = new Counter(0, name);
     this.add(name, counter);
     return counter;
   }

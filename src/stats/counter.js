@@ -2,8 +2,8 @@
 const Value = require ('./value');
 
 class Counter extends Value {
-  constructor(value = 0) {
-    super(value);
+  constructor(value = 0, name) {
+    super(value, name);
   }
   
   increment(step = 1) {
