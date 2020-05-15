@@ -1,9 +1,13 @@
 // https://undercards.net/images/emotes/NAME.EXT
+const stats = require('./stats');
+
 const emoji = {};
+const popular = stats.counters('emoji');
 
 function add({ key, id, name, animated }) {
   if (!id) return;
   emoji[key] = `<${animated?'a':''}:${name || key}:${id}>`;
+  popular.get(key); // Add entry to popularity list
 }
 
 function png(key, id, name) {
