@@ -29,6 +29,7 @@ const discord = new Eris(process.env.DISCORD_BOT_TOKEN);
 
 let discordReady = false;
 discord.on('ready', () => discordReady = true);
+discord.on('error', (err) => console.log(err.code ? `Error: ${err.code}${err.message?`: ${err.message}`:''}` : err));
 
 function getSendStatus() {
   if (!sendStatus) {
@@ -83,7 +84,7 @@ function cleanString(string) {
 
 // TODO: Modularize message handlers
 undercards.on('connect', () => { // Join rooms
-  getSendStatus()({message: 'Connected'});
+  getSendStatus()();
 
   Object.entries(endpoints)
   .filter(([_, { connect } = {}]) => connect)
@@ -135,7 +136,7 @@ undercards.on('connect', () => { // Join rooms
     post(endpoint, message);
   }
 }).on('disconnect', () => {
-  sendStatus({message: 'Disconnected from UC'});
+  sendStatus();
   console.debug('Socket Closed');
   // We can technically try and reconnect here
   if (!process.exitCode) reconnectUC(5000);
