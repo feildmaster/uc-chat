@@ -1,3 +1,4 @@
+const axios = require('axios');
 const Eris = require('eris');
 const chatRecord = require('./util/chat-record');
 const { endpoints, autoTemplates } = require('./endpoints');
