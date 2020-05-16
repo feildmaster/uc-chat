@@ -229,7 +229,7 @@ discord.connect();
 
 process.on('exit', () => {
   undercards.disconnect();
-  discord.disconnect();
+  discord.disconnect({ reconnect: false });
 });
 
 module.exports = {
