@@ -7,7 +7,7 @@ require('./src/bot');
 const fs = require('fs');
 const { inspect } = require('util');
 
-const dir = `./.data/logs`;
+const dir = `.data/logs`;
 
 function saveLog(data) { // If we're saving a log we're exiting anyway, so sync is fine
   if (!fs.existsSync(dir)) {
