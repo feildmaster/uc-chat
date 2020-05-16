@@ -8,7 +8,6 @@ const ranks = require('./undercardsRanks');
 const stats = require('./stats');
 const Undercards = require('./undercards/connection');
 
-
 let sendStatus;
 const templateRegex = /\$(\d+)/g;
 const reportLimits = new Limiter({
