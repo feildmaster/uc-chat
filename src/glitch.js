@@ -14,7 +14,7 @@ app.get("/status", (req, res) => status().then(() => {
   res.send(error);
 }));
 
-app.use('/errors', express.static(path.resolve(__dirname, './.data/logs')), serveIndex(path.resolve(__dirname, './.data/logs')));
+app.use('/errors', express.static(path.resolve('./.data/logs')), serveIndex(path.resolve('./.data/logs')));
 
 if (process.env.PORT) {
   const listener = app.listen(process.env.PORT, () => {
