@@ -16,7 +16,6 @@ const missing = stats.counters('emojiMissing');
 const missingGif = stats.counters('emojiMissingAnimated');
 
 let safeExit = false;
-let count = 0;
 
 function sendStatus({
   shuttingDown = false,
@@ -74,17 +73,5 @@ function unexpectedTermination() {
 module.exports = sendStatus;
 
 setInterval(() => {
-  count += 1;
-  const disconnect = count > 20;
-  const status = {
-    shuttingDown: disconnect,
-  };
-  if (disconnect) {
-    status.message = 'Disconnecting';
-  }
-  sendStatus(status).catch(() => {}).then(() => {
-    if (disconnect) {
-      process.exit(1);
-    }
-  });
+  sendStatus(status).catch(console.error);
 }, 30 * 60000);
