@@ -72,6 +72,4 @@ function unexpectedTermination() {
 
 module.exports = sendStatus;
 
-setInterval(() => {
-  sendStatus(status).catch(console.error);
-}, 30 * 60000);
+setInterval(() => sendStatus(), 30 * 60000);
