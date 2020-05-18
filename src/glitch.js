@@ -1,4 +1,5 @@
 const express = require("express");
+const path = require('path');
 const serveIndex = require('serve-index');
 const status = require('./status');
 
@@ -13,7 +14,7 @@ app.get("/status", (req, res) => status().then(() => {
   res.send(error);
 }));
 
-app.use('/errors', express.static(`${__dirname}/.data/logs`), serveIndex(`${__dirname}/.data/logs`));
+app.use('/errors', express.static(path.resolve(__dirname, './.data/logs')), serveIndex(path.resolve(__dirname, './.data/logs')));
 
 if (process.env.PORT) {
   const listener = app.listen(process.env.PORT, () => {
