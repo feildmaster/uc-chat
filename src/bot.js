@@ -228,7 +228,8 @@ discord.connect();
 
 process.on('exit', () => {
   undercards.disconnect();
-  discord.disconnect({ reconnect: false });
+  discord.editStatus('invisible');
+  // discord.disconnect({ reconnect: false });
 });
 
 module.exports = {

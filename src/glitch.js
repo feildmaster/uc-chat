@@ -1,4 +1,5 @@
 const express = require("express");
+const serveIndex = require('serve-index');
 const status = require('./status');
 
 const app = express();
@@ -12,9 +13,7 @@ app.get("/status", (req, res) => status().then(() => {
   res.send(error);
 }));
 
-// app.get('/errors', express.static('.data/logs'), serveIndex('./data/logs', { template: errorTemplate }));
-
-function errorTemplate(locals, callback) {}
+app.use('/errors', express.static('.data/logs'), serveIndex('./data/logs'));
 
 if (process.env.PORT) {
   const listener = app.listen(process.env.PORT, () => {
