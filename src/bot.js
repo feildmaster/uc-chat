@@ -214,7 +214,7 @@ Object.entries(endpoints)
     };
 
     const alertRole = process.env.ALERT_ROLE;
-    if (alertRole && message.toLowerCase().startsWith('@report') && reportLimits.check(user.id)) {
+    if (alertRole && message.toLowerCase().startsWith('@report') && reportLimits.check(user.id) === true) {
       data.content = alertRole;
     }
 
