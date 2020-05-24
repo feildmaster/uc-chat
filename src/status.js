@@ -21,6 +21,7 @@ function sendStatus({
   shuttingDown = false,
   message,
   error,
+  extended = true,
 } = {}) {
   if (!(endpoint.chan || endpoint.hook) || safeExit) return Promise.resolve(false);
 
@@ -41,13 +42,15 @@ function sendStatus({
   
   stat('Messages', `Incoming: ${stats.counters('messages').get('incoming').get()}\nOutgoing: ${stats.counters('messages').get('outgoing').get()}`, false);
 
-  if (popular.total()) {
-    stat('Top Emoji', popular.top(5).map((a) => `${a.name} x${a.get()}`).join('\n'));
-    stat('Least Used Emoji', popular.last(5).map((a) => `${a.name} x${a.get()}`).join('\n'));
+  if (extended) {
+    if (popular.total()) {
+      stat('Top Emoji', popular.top(5).map((a) => `${a.name} x${a.get()}`).join('\n'));
+      stat('Least Used Emoji', popular.last(5).map((a) => `${a.name} x${a.get()}`).join('\n'));
+    }
+    stat('Upload Candidates (png)', missing.top(5).map((a) => `${a.name} x${a.get()}`).join('\n'));
+    stat('Upload Candidates (gif)', missingGif.top(5).map((a) => `${a.name} x${a.get()}`).join('\n'));
   }
-  stat('Upload Candidates (png)', missing.top(5).map((a) => `${a.name} x${a.get()}`).join('\n'));
-  stat('Upload Candidates (gif)', missingGif.top(5).map((a) => `${a.name} x${a.get()}`).join('\n'));
-
+  
   // TODO: More stats
 
   if (error) stat('Error', error.message, false);
