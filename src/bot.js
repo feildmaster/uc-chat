@@ -33,9 +33,10 @@ discord.on('ready', () => discordReady = true);
 discord.on('error', (err) => console.log(err.code ? `Error: ${err.code}${err.message?`: ${err.message}`:''}` : err));
 
 discord.registerCommand('emotes', (msg, args) => {
+  // TODO: Allow registering channel emoji to reaction, and only show emoji that haven't been registered
   const emoji = [];
   discord.guilds.forEach(({emojis}) => emoji.push(...emojis.map(({id, name}) => `${name?`${name}:`:''}${id}`)));
-  return discord.createMessage(msg.channel.id, 'All Emoji').then((resp) => emoji.forEach(e => resp.addReaction(e)));
+  return discord.createMessage(msg.channel.id, 'All Emoji').then((resp) => emoji.slice(0, 20).forEach(e => resp.addReaction(e)));
 }, {
   requirements: {
     userIDs: [
@@ -47,14 +48,15 @@ discord.registerCommand('emotes', (msg, args) => {
   }
 });
 
+/* SendStatus forces a message to be sent to the endpoint
 discord.registerCommand('status', (msg) => {
-  if (true) return; // SendStatus forces a message to be sent to the endpoint
   return getSendStatus()({
     extended: false,
   }).catch(e => e);
 }, {
   cooldown: 60*1000,
 });
+*/
 
 function getSendStatus() {
   if (!sendStatus) {
