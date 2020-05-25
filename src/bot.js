@@ -133,6 +133,7 @@ undercards.on('connect', () => { // Join rooms
   Object.entries(endpoints)
   .filter(([_, { connect } = {}]) => connect)
   .forEach(([ room ]) => undercards.join(room));
+  discord.editStatus('online');
 }).on('message/getHistory', () => { // TODO: Parse history into chatRecord
 }).on('message/received', () => { // Increment incoming stats
   stats.counters('messages').get('incoming').increment();
@@ -183,15 +184,20 @@ undercards.on('connect', () => { // Join rooms
   sendStatus();
   console.debug('Socket Closed');
   // We can technically try and reconnect here
-  if (!process.exitCode) reconnectUC(5000);
+  if (!process.exitCode) {
+    discord.editStatus('idle');
+    reconnectUC(5000);
+  }
 }).on('error', (err) => {
   console.error('Connection error:', err);
 }).on('error/login', (res) => {
   console.error('Server unavailable');
   // Retry connection after 5 seconds
   reconnectUC(5000);
+  discord.editStatus('idle');
 }).on('error/timeout', () => {
   console.error('Timeout occurred: Please check login credentials');
+  discord.editStatus('idle');
 }).on('message/getPrivateMessage', (data) => { // TODO: Handle private messages
   console.log('[PM]', JSON.stringify(data));
 });
