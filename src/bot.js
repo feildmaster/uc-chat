@@ -51,12 +51,12 @@ discord.registerCommand('emotes', (msg, args) => {
 });
 
 discord.registerCommand('restart', (msg, args) => {
-  getSendStatus()({
-    endpoint: {
-      chan: msg.channel.id,
-    },
+  return getSendStatus()({
     shuttingDown: true,
     message: 'Restarting',
+  }).then(() => {
+    process.nextTick(() => process.exit());
+    return 'Restarting!'
   });
 }, {
   requirements: commandRequirements,
@@ -68,7 +68,9 @@ discord.registerCommand('status', (msg) => {
       chan: msg.channel.id,
     },
     extended: false,
-  }).catch(e => e);
+  }).then(() => {
+    // noop
+  });
 }, {
   cooldown: 60*1000,
 });
