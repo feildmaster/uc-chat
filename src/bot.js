@@ -28,6 +28,15 @@ const discord = new Eris.CommandClient(process.env.DISCORD_BOT_TOKEN, {}, {
   prefix: ['@mention', '~'],
 });
 
+const commandRequirements = {
+  userIDs: [
+    '208562116590960640', // feildmaster
+  ],
+  roleIDs: [
+    '703677962859315230', // Manager
+  ],
+};
+
 let discordReady = false;
 discord.on('ready', () => discordReady = true);
 discord.on('error', (err) => console.log(err.code ? `Error: ${err.code}${err.message?`: ${err.message}`:''}` : err));
@@ -38,25 +47,31 @@ discord.registerCommand('emotes', (msg, args) => {
   discord.guilds.forEach(({emojis}) => emoji.push(...emojis.map(({id, name}) => `${name?`${name}:`:''}${id}`)));
   return discord.createMessage(msg.channel.id, 'All Emoji').then((resp) => emoji.slice(0, 20).forEach(e => resp.addReaction(e)));
 }, {
-  requirements: {
-    userIDs: [
-      '208562116590960640', // feildmaster
-    ],
-    roleIDs: [
-      '703677962859315230', // Manager
-    ],
-  }
+  requirements: commandRequirements,
 });
 
-/* SendStatus forces a message to be sent to the endpoint
+discord.registerCommand('restart', (msg, args) => {
+  getSendStatus()({
+    endpoint: {
+      chan: msg.channel.id,
+    },
+    shuttingDown: true,
+    message: 'Restarting',
+  });
+}, {
+  requirements: commandRequirements,
+});
+
 discord.registerCommand('status', (msg) => {
   return getSendStatus()({
+    endpoint: {
+      chan: msg.channel.id,
+    },
     extended: false,
   }).catch(e => e);
 }, {
   cooldown: 60*1000,
 });
-*/
 
 function getSendStatus() {
   if (!sendStatus) {

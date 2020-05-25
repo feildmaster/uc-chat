@@ -6,7 +6,7 @@ const bot = require('./bot');
 
 // process.env.PROJECT_DOMAIN (https://api.glitch.com/v1/projects/by/domain?domain={PROJECT_DOMAIN})
 
-const endpoint = {
+const _endpoint = {
   hook: process.env.WEBHOOK_STATUS,
   chan: process.env.CHANNEL_STATUS,
 };
@@ -22,6 +22,7 @@ function sendStatus({
   message,
   error,
   extended = true,
+  endpoint = _endpoint,
 } = {}) {
   if (!(endpoint.chan || endpoint.hook) || safeExit) return Promise.resolve(false);
 
