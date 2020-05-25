@@ -24,11 +24,37 @@ const _INFO_ = {
 };
 
 const undercards = new Undercards(process.env.LOGINBODY);
-const discord = new Eris(process.env.DISCORD_BOT_TOKEN);
+const discord = new Eris.CommandClient(process.env.DISCORD_BOT_TOKEN, {}, {
+  prefix: ['@mention', '~'],
+});
 
 let discordReady = false;
 discord.on('ready', () => discordReady = true);
 discord.on('error', (err) => console.log(err.code ? `Error: ${err.code}${err.message?`: ${err.message}`:''}` : err));
+
+discord.registerCommand('emotes', (msg, args) => {
+  const emoji = [];
+  discord.guilds.forEach(({emojis}) => emoji.push(...emojis.map(({id, name}) => `${name?`${name}:`:''}${id}`)));
+  return discord.createMessage(msg.channel.id, 'All Emoji').then((resp) => emoji.forEach(e => resp.addReaction(e)));
+}, {
+  requirements: {
+    userIDs: [
+      '208562116590960640', // feildmaster
+    ],
+    roleIDs: [
+      '703677962859315230', // Manager
+    ],
+  }
+});
+
+discord.registerCommand('status', (msg) => {
+  if (true) return; // SendStatus forces a message to be sent to the endpoint
+  return getSendStatus()({
+    extended: false,
+  }).catch(e => e);
+}, {
+  cooldown: 60*1000,
+});
 
 function getSendStatus() {
   if (!sendStatus) {

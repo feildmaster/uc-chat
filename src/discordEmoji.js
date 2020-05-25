@@ -59,5 +59,6 @@ gif('Apoca_What', '704662014395416576');
 gif('zzz', '704688349587439627');
 gif('Thinking_Asriel', '704661971693469716');
 gif('Confused_Lost_Sans', '704661648379478066');
+gif('Angy', '713773437952458843', 'Mettatowo');
 
 module.exports = emoji;
