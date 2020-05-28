@@ -55,10 +55,9 @@ discord.registerCommand('restart', (msg, args) => {
   return getSendStatus()({
     shuttingDown: true,
     message: 'Restarting',
-  }).then(() => {
-    process.nextTick(() => process.exit());
-    return 'Restarting!'
-  });
+  }).then(() => discord.createMessage(msg.channel.id, 'Restarting!')
+  .catch(console.error)
+  .then(() => process.exit()));
 }, {
   requirements: commandRequirements,
 });
@@ -182,10 +181,12 @@ undercards.on('connect', () => { // Join rooms
     post(endpoint, message);
   }
 }).on('disconnect', () => {
-  sendStatus();
+  getSendStatus()({
+    message: 'Socket Closed',
+  });
   console.debug('Socket Closed');
   // We can technically try and reconnect here
-  if (!process.exitCode) {
+  if (process.exitCode !== undefined) {
     discord.editStatus('idle');
     reconnectUC(5000);
   }
