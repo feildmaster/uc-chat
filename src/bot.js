@@ -1,7 +1,7 @@
 const axios = require('axios');
 const Eris = require('eris');
 const chatRecord = require('./util/chat-record');
-const emoji = require('./discordEmoji');
+const EMOJI = require('./discordEmoji');
 const { endpoints, autoTemplates } = require('./endpoints');
 const getMessage = require('./getMessage');
 const Limiter = require('./util/cooldown');
@@ -45,7 +45,7 @@ discord.on('error', (err) => console.log(err.code ? `Error: ${err.code}${err.mes
 discord.registerCommand('emotes', (msg, args) => {
   // TODO: Allow registering discord emoji to in-game emoji
   const emoji = [];
-  discord.guilds.forEach(({emojis}) => emoji.push(...emojis.filter(({id}) => !emoji[id]).map(({id, name}) => `${name?`${name}:`:''}${id}`)));
+  discord.guilds.forEach(({emojis}) => emoji.push(...emojis.filter(({id}) => !EMOJI[id]).map(({id, name}) => `${name?`${name}:`:''}${id}`)));
   return discord.createMessage(msg.channel.id, 'All Emoji').then((resp) => emoji.slice(0, 20).forEach(e => resp.addReaction(e)));
 }, {
   requirements: commandRequirements,

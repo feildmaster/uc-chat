@@ -47,6 +47,7 @@ function sendStatus({
 
   if (extended) {
     if (popular.total()) {
+      // `[${a.name}](${emojiURI}${a.name}.${missing.has(a.name) ? 'gif' : 'png'})`
       stat('Top Emoji', popular.top(5).map((a) => `${emoji[a.name] || a.name} x${a.get()}`).join('\n'));
       stat('Least Used Emoji', popular.last(5).map((a) => `${a.name} x${a.get()}`).join('\n'));
     }
