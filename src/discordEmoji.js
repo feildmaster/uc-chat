@@ -7,6 +7,7 @@ const popular = stats.counters('emoji');
 function add({ key, id, name, animated }) {
   if (!id) return;
   emoji[key] = `<${animated?'a':''}:${name || key}:${id}>`;
+  emoji[id] = true;
   popular.get(key); // Add entry to popularity list
 }
 
@@ -30,20 +31,21 @@ png('Chara_Huh', '705361092100227124');
 png('Smirkriel', '704662232138645506');
 png('Omega_Stare', '704661071599894569');
 png('Sleeping_Frisk', '710869556410974290r', 'FriskSleeping');
-png('Frisk_Meh', '');
-png('Processing_Flowey', ''),
+png('Frisk_Meh', '713774563594338397', 'FriskMeh');
+png('Mettatowo', '713775088318545950', 'owo');
+png('Processing_Flowey', '713773820527247360', 'flowey'),
+png('Chara_No', '713774794113417357', 'CharaNo');
+png('Alphys_Sweat', '713774689742356501', 'AlphysSweat');
 png('Chara_Stop', '');
 png('Shy_Chara', '');
 png('Angry_Mad_Dummy', '');
 png('Asriel_Yes', '');
-png('Chara_No', '');
 png('Happy_Greater_Dog', '');
 png('Surprised_Alphys', '');
 png('Sansger', '');
-png('Mettatowo', '');
 png('Ping_Pon', '');
 png('Susie_Creepy', '');
-png('Diabolic_Kris', '');
+png('Diabolic_Kris', '713774192964665405', 'DiabolicKris');
 png('Snail_Fury', '');
 png('Disturbed_Burger_Pants', '');
 
@@ -60,5 +62,7 @@ gif('zzz', '704688349587439627');
 gif('Thinking_Asriel', '704661971693469716');
 gif('Confused_Lost_Sans', '704661648379478066');
 gif('Angy', '713773437952458843', 'Mettatowo');
+gif('Troubled_Asriel', '', '');
+gif('Smug_Asriel', '', '');
 
 module.exports = emoji;
