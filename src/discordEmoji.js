@@ -30,7 +30,7 @@ png('This_is_fine', '704662271648989314');
 png('Chara_Huh', '705361092100227124');
 png('Smirkriel', '704662232138645506');
 png('Omega_Stare', '704661071599894569');
-png('Sleeping_Frisk', '710869556410974290r', 'FriskSleeping');
+png('Sleeping_Frisk', '710869556410974290', 'FriskSleeping');
 png('Frisk_Meh', '713774563594338397', 'FriskMeh');
 png('Mettatowo', '713775088318545950', 'owo');
 png('Processing_Flowey', '713773820527247360', 'flowey'),
