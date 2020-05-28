@@ -187,7 +187,7 @@ undercards.on('connect', () => { // Join rooms
   });
   console.debug('Socket Closed');
   // We can technically try and reconnect here
-  if (process.exitCode !== undefined) {
+  if (process.exitCode === undefined) {
     discord.editStatus('idle');
     reconnectUC(5000);
   }
