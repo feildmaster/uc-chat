@@ -1,22 +1,21 @@
 const record = new Map();
 const limit = 200;
+const rooms = new Map();
 
 exports.add = ({id, user: {id: userid, username}}, room) => {
   record.set(id, {
     room, userid, username,
   });
+
+  if (!rooms.has(room)) {
+    rooms.set(room, []);
+  }
+  const cache = rooms.get(room);
+  cache.push(id);
   
-  if (overLimit()) { // Check once to skip creation of iterator
-    const itr = record.keys();
-    do { // In the off chance theres more than 1 stray
-      const key = itr.next().value;
-      record.delete(key);
-    } while (overLimit());
+  if (cache.size > limit) {
+    record.delete(cache.pop());
   }
 };
 
 exports.get = (id) => record.get(id);
-
-function overLimit() {
-  return record.size > limit;
-}
