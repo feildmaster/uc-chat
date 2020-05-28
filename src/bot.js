@@ -134,7 +134,8 @@ undercards.on('connect', () => { // Join rooms
   .filter(([_, { connect } = {}]) => connect)
   .forEach(([ room ]) => undercards.join(room));
   discord.editStatus('online');
-}).on('message/getHistory', () => { // TODO: Parse history into chatRecord
+}).on('message/getHistory', ({room = '', history = []} = {}) => {
+  history.forEach(message => chatRecord.add(message, room));
 }).on('message/received', () => { // Increment incoming stats
   stats.counters('messages').get('incoming').increment();
 }).on('message/deleteMessages', (data) => {
