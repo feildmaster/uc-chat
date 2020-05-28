@@ -189,7 +189,7 @@ undercards.on('connect', () => { // Join rooms
   // We can technically try and reconnect here
   if (process.exitCode === undefined) {
     discord.editStatus('idle');
-    reconnectUC(5000);
+    reconnectUC(500);
   }
 }).on('error', (err) => {
   console.error('Connection error:', err);
