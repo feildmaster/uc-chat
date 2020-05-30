@@ -4,11 +4,13 @@ function parser(key, value) {
   if (simpleParse.includes(key)) {
     return JSON.parse(value);
   } else if (key === 'message' && typeof value === 'string') {
-    const temp = JSON.parse(value);
-    if (temp.args) {
-      return JSON.parse(temp.args);
-    }
-    return temp;
+    try {
+      const temp = JSON.parse(value);
+      if (temp.args) {
+        return JSON.parse(temp.args);
+      }
+      return temp;
+    } catch {}
   }
   return value;
 }
