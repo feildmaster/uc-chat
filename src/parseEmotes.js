@@ -28,7 +28,7 @@ function parseMessageEmotes(message = '') {
       counter.get(emote).increment();
     }
 
-    return `:${emote.substring(emote.lastIndexOf('.'))}:`;
+    return `:${emote.substring(0, emote.lastIndexOf('.'))}:`;
   });
   // console.log(parsedMessage);
   return parsedMessage;
