@@ -56,7 +56,7 @@ discord.registerCommand('emotes', (msg, args) => {
   discord.guilds.forEach(({emojis}) => emoji.push(...emojis.filter(({id}) => !EMOJI[id])));
 
   const url = tempKey.lastIndexOf('/') + 1;
-  const key = url ? tempKey : `${tempKey.substring(url)}`;
+  const key = url ? `${tempKey.substring(url)}` : tempKey;
 
   const safeEmoji = emoji.slice(0, 20);
 
@@ -83,6 +83,9 @@ discord.on('messageReactionAdd', (msg, emoji, uid) => {
   firebase.database().ref(`config/undercards/emoji/${data.key.replace('.', '_')}`).set({
     id: emoji.id,
     name: emoji.name,
+  }).then(() => {
+    msg.removeReactions();
+    msg.edit(`Registered <${emoji.animated?'a':''}:${emoji.name}:${emoji.id}> for \`${data.key.substring(0, data.key.lastIndexOf('.'))}\``)
   });
 });
 
