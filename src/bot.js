@@ -39,30 +39,34 @@ const commandRequirements = {
   ],
 };
 
-const pending = new Map();
-
 let discordReady = false;
 discord.on('ready', () => discordReady = true);
 discord.on('error', (err) => console.log(err.code ? `Error: ${err.code}${err.message?`: ${err.message}`:''}` : err));
 
+const pending = new Map();
 discord.registerCommand('emotes', (msg, args) => {
-  if (!args.length) return 'Include emote name.ext';
-
-  const emoji = [];
+  if (!args.length) return 'Include emote.ext';
 
   const tempKey = args[0];
-  const url = tempKey.lastIndexOf('/') + 1;
   const ext = tempKey.lastIndexOf('.');
 
   if (ext === -1) return 'Missing emote extension';
 
+  const emoji = [];
   discord.guilds.forEach(({emojis}) => emoji.push(...emojis.filter(({id}) => !EMOJI[id]).map(({id, name}) => {id, name})));
-  return discord.createMessage(msg.channel.id, 'All Emoji').then((resp) => {
-    const safeEmoji = emoji.slice(0, 20);
+
+  const url = tempKey.lastIndexOf('/') + 1;
+  const key = url ? tempKey : `${tempKey.substring(url)}`;
+
+  const safeEmoji = emoji.slice(0, 20);
+
+  if (!safeEmoji.length) return 'Found no emoji';
+
+  return discord.createMessage(msg.channel.id, `Select emoji for \`${key}\``).then((resp) => {
     safeEmoji.forEach(({id, name}) => resp.addReaction(`${name?`${name}:`:''}${id}`));
 
     pending.set(msg.id, {
-      key: `${url ? tempKey : `${tempKey.substring(url)}`}`,
+      key,
       safeEmoji,
       uid: msg.author.id,
     });
