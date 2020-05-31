@@ -48,11 +48,10 @@ discord.on('error', (err) => console.log(err.code ? `Error: ${err.code}${err.mes
 discord.registerCommand('emotes', (msg, args) => {
   if (!args.length) return 'Include emote name.ext';
 
-  // TODO: Allow registering discord emoji to in-game emoji
   const emoji = [];
 
   const tempKey = args[0];
-  const url = tempKey.lastIndexOf('/');
+  const url = tempKey.lastIndexOf('/') + 1;
   const ext = tempKey.lastIndexOf('.');
 
   if (ext === -1) return 'Missing emote extension';
@@ -63,7 +62,7 @@ discord.registerCommand('emotes', (msg, args) => {
     safeEmoji.forEach(({id, name}) => resp.addReaction(`${name?`${name}:`:''}${id}`));
 
     pending.set(msg.id, {
-      key,
+      key: `${url ? tempKey : `${tempKey.substring(url)}`}`,
       safeEmoji,
       uid: msg.author.id,
     });
