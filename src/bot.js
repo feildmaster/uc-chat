@@ -3,6 +3,7 @@ const Eris = require('eris');
 const chatRecord = require('./util/chat-record');
 const EMOJI = require('./discordEmoji');
 const { endpoints, autoTemplates } = require('./endpoints');
+const firebase = require('./firebase');
 const getMessage = require('./getMessage');
 const Limiter = require('./util/cooldown');
 const ranks = require('./undercardsRanks');
@@ -38,17 +39,48 @@ const commandRequirements = {
   ],
 };
 
+const pending = new Map();
+
 let discordReady = false;
 discord.on('ready', () => discordReady = true);
 discord.on('error', (err) => console.log(err.code ? `Error: ${err.code}${err.message?`: ${err.message}`:''}` : err));
 
 discord.registerCommand('emotes', (msg, args) => {
+  if (!args.length) return 'Include emote name.ext';
+
   // TODO: Allow registering discord emoji to in-game emoji
   const emoji = [];
-  discord.guilds.forEach(({emojis}) => emoji.push(...emojis.filter(({id}) => !EMOJI[id]).map(({id, name}) => `${name?`${name}:`:''}${id}`)));
-  return discord.createMessage(msg.channel.id, 'All Emoji').then((resp) => emoji.slice(0, 20).forEach(e => resp.addReaction(e)));
+
+  const tempKey = args[0];
+  const url = tempKey.lastIndexOf('/');
+  const ext = tempKey.lastIndexOf('.');
+
+  if (ext === -1) return 'Missing emote extension';
+
+  discord.guilds.forEach(({emojis}) => emoji.push(...emojis.filter(({id}) => !EMOJI[id]).map(({id, name}) => {id, name})));
+  return discord.createMessage(msg.channel.id, 'All Emoji').then((resp) => {
+    const safeEmoji = emoji.slice(0, 20);
+    safeEmoji.forEach(({id, name}) => resp.addReaction(`${name?`${name}:`:''}${id}`));
+
+    pending.set(msg.id, {
+      key,
+      safeEmoji,
+      uid: msg.author.id,
+    });
+  });
 }, {
   requirements: commandRequirements,
+});
+
+discord.on('messageReactionAdd', (msg, emoji, uid) => {
+  const data = pending.get(msg.id);
+  if (!data || data.uid !== uid || !data.emoji.some(({id}) => id === emoji.id)) return;
+  pending.delete(msg.id);
+
+  firebase.database().ref(`config/undercards/emoji/${data.key.replace('.', '_')}`).set({
+    id: emoji.id,
+    name: emoji.name,
+  });
 });
 
 discord.registerCommand('restart', (msg, args) => {

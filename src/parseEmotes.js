@@ -1,7 +1,7 @@
 const emoji = require('./discordEmoji');
 const stats = require('./stats');
 
-const emoteRegex = /<img src="images\/emotes\/([^.]*).(png|gif)" ?\/>/g;
+const emoteRegex = /<img src="images\/emotes\/([^"]*)" ?\/>/g;
 
 const popular = stats.counters('emoji');
 const missing = stats.counters('emojiMissing');
@@ -11,25 +11,24 @@ function parseMessageEmotes(message = '') {
   const previous = new Set(); // Limit one of each emoji per message
 
   //images are displayed to the web browser as <img src="images/emotes/Disturbed_Burger_Pants.png" />
-  const parsedMessage = message.replace(emoteRegex, (match, $1, $2) => {
+  const parsedMessage = message.replace(emoteRegex, (_, $1) => {
     const emote = $1.replace(/\\/g, '');
-    const discord = emoji[emote];
     
     const incremented = previous.has(emote);
-
     if (!incremented) {
       popular.get(emote).increment();
       previous.add(emote);
     }
 
+    const discord = emoji[emote];
     if (discord) return discord;
 
     if (!incremented) {
-      const counter = $2 === 'gif' ? missingGif : missing;
+      const counter = emote.endsWith('.gif') ? missingGif : missing;
       counter.get(emote).increment();
     }
 
-    return `:${emote}:`;
+    return `:${emote.substring(emote.lastIndexOf('.'))}:`;
   });
   // console.log(parsedMessage);
   return parsedMessage;
