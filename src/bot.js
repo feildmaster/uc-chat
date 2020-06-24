@@ -77,14 +77,16 @@ discord.registerCommand('emotes', (msg, args) => {
 
 discord.on('messageReactionAdd', (msg, emoji, uid) => {
   const data = pending.get(msg.id);
-  if (!data || data.uid !== uid || !data.emoji.some(({id}) => id === emoji.id)) return;
+  if (!data) return console.log('Data not found');
+  if (data.uid !== uid) return console.log('UID incorrect');
+  if (!data.emoji.some(({id}) => id === emoji.id)) return console.log(`${emoji.id} not found`);
   pending.delete(msg.id);
 
+  msg.removeReactions(); // Remove reactions immediately
   firebase.database().ref(`config/undercards/emoji/${data.key.replace('.', '_')}`).set({
     id: emoji.id,
     name: emoji.name,
   }).then(() => {
-    msg.removeReactions();
     msg.edit(`Registered <${emoji.animated?'a':''}:${emoji.name}:${emoji.id}> for \`${data.key.substring(0, data.key.lastIndexOf('.'))}\``)
   });
 });
