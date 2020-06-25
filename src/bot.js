@@ -47,7 +47,7 @@ const pending = new Map();
 discord.registerCommand('emotes', (msg, args) => {
   const run = !!args.length;
 
-  const tempKey = args[0];
+  const tempKey = args[0] || '';
   const ext = tempKey.lastIndexOf('.');
 
   if (run && ext === -1) return 'Missing emote extension';
@@ -55,7 +55,7 @@ discord.registerCommand('emotes', (msg, args) => {
   const emoji = [];
   discord.guilds.forEach(({emojis}) => emoji.push(...emojis.filter(({id}) => !EMOJI[id])));
 
-  const url = tempKey.lastIndexOf('/') + 1;
+  const url = ext + 1;
   const key = url ? `${tempKey.substring(url)}` : tempKey;
 
   const safeEmoji = emoji.slice(0, 20);
