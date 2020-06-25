@@ -235,6 +235,7 @@ undercards.on('connect', () => { // Join rooms
   console.error('Connection error:', err);
 }).on('error/login', (res) => {
   console.error('Server unavailable');
+  // TODO: Add restart flag
   // Retry connection after 5 seconds
   reconnectUC(5000);
   discord.editStatus('idle');
@@ -276,7 +277,7 @@ Object.entries(endpoints)
         description: message,
         color: parseInt(ranks[user.mainGroup.priority] || ranks[10], 16),
         footer: {
-          text: user.id,
+          text: `ID:${user.id}, LV:${user.level}(${user.division.replace('_', ' ')})`,
         },
       },
     };
