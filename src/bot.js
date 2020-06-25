@@ -45,12 +45,12 @@ discord.on('error', (err) => console.log(err.code ? `Error: ${err.code}${err.mes
 
 const pending = new Map();
 discord.registerCommand('emotes', (msg, args) => {
-  if (!args.length) return 'Include emote.ext';
+  const run = !!args.length;
 
   const tempKey = args[0];
   const ext = tempKey.lastIndexOf('.');
 
-  if (ext === -1) return 'Missing emote extension';
+  if (run && ext === -1) return 'Missing emote extension';
 
   const emoji = [];
   discord.guilds.forEach(({emojis}) => emoji.push(...emojis.filter(({id}) => !EMOJI[id])));
@@ -62,22 +62,25 @@ discord.registerCommand('emotes', (msg, args) => {
 
   if (!safeEmoji.length) return 'Found no emoji';
 
-  return discord.createMessage(msg.channel.id, `Select emoji for \`${key}\``).then((resp) => {
+  return discord.createMessage(msg.channel.id, run ? `Select emoji for \`${key}\`` : 'Unused Emoji').then((resp) => {
     safeEmoji.forEach(({id, name}) => resp.addReaction(`${name?`${name}:`:''}${id}`));
 
-    pending.set(msg.id, {
-      key,
-      emoji: safeEmoji,
-      uid: msg.author.id,
-    });
+    if (run) {
+      pending.set(resp.id, {
+        key,
+        emoji: safeEmoji,
+        uid: msg.author.id,
+      });
+    }
   });
 }, {
   requirements: commandRequirements,
 });
 
 discord.on('messageReactionAdd', (msg, emoji, uid) => {
+  if (discord.user.id === uid) return; // Ignore self
   const data = pending.get(msg.id);
-  if (!data) return console.log('Data not found');
+  if (!data) return;
   if (data.uid !== uid) return console.log(`UID(${uid}) incorrect`);
   if (!data.emoji.some(({id}) => id === emoji.id)) return console.log(`${emoji.id} not found`);
   pending.delete(msg.id);

@@ -90,5 +90,8 @@ firebase.database().ref('config/statusRate').on('value', (s) => {
   const val = s.val() * minute; // value * minute
   if (val >= minute * 10) { // Min 10 minutes
     interval = setInterval(() => sendStatus(), val);
+    console.log(`Sending status updates every ${val}ms`);
+  } else {
+    console.log('Not sending status updates');
   }
 });
