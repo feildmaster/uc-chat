@@ -46,16 +46,21 @@ discord.on('error', (err) => console.log(err.code ? `Error: ${err.code}${err.mes
 const pending = new Map();
 discord.registerCommand('emotes', (msg, args) => {
   const run = !!args.length;
+  const tempKey = args[0] || '';  
+  const url = tempKey.lastIndexOf('/') + 1;
+  const key = url ? tempKey.substring(url) : tempKey;
+  
+  if (run && key.lastIndexOf('.') === -1) return 'Missing emote extension';
 
-  const tempKey = args[0] || '';
-
-  if (run && tempKey.lastIndexOf('.') === -1) return 'Missing emote extension';
+  if (run) {
+    const existing = EMOJI[key];
+    if (existing) {
+      return `\`${key}\` registered to ${existing}`;
+    }
+  }
 
   const emoji = [];
   discord.guilds.forEach(({emojis}) => emoji.push(...emojis.filter(({id}) => !EMOJI[id])));
-
-  const url = tempKey.lastIndexOf('/') + 1;
-  const key = url ? `${tempKey.substring(url)}` : tempKey;
 
   const safeEmoji = emoji.slice(0, 20);
 
@@ -274,7 +279,7 @@ Object.entries(endpoints)
       embed: {
         author: {
           name: username,
-          icon_url: 'https://undercards.net/images/avatars/' + user.avatar.image + '.' + user.avatar.extension
+          icon_url: 'https://undercards.net/images/avatars/' + user.avatar.image + '.' + (user.avatar.extension || 'png')
         },
         description: message,
         color: parseInt(ranks[user.mainGroup.priority] || ranks[10], 16),
