@@ -18,12 +18,12 @@ function add({ key, id, name, animated }) {
   }
 }
 
-function hook({ key = '', val }) {
+function hook(data) {
   const {
     id,
     name,
-    animated = key.endsWith('_gif'),
-  } = val() || {};
+    animated = data.key.endsWith('_gif'),
+  } = data.val() || {};
 
   const index = key.lastIndexOf('_');
 
