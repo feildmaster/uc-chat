@@ -18,10 +18,12 @@ function add({ key, id, name, animated }) {
   }
 }
 
-function hook(snapshot) {
-  const key = snapshot.key;
-  const {id, name} = snapshot.val() || {};
-  const animated = key.endsWith('_gif');
+function hook({ key = '', val }) {
+  const {
+    id,
+    name,
+    animated = key.endsWith('_gif'),
+  } = val() || {};
 
   const index = key.lastIndexOf('_');
 
@@ -38,6 +40,18 @@ const ref = firebase.database().ref('config/undercards/emoji');
 ref.on('child_added', hook);
 ref.on('child_changed', hook);
 // Delete, somehow
-// ref.on('child_removed', (snapshot) => {});
+ref.on('child_removed', ({key, val}) => {
+  const {
+    id,
+    name,
+    animated = key.endsWith('_gif'),
+  } = val() || {};
+
+  const index = key.lastIndexOf('_');
+  const fixedKey = `${key.substring(0, index)}.${key.substring(index + 1)}`;
+
+  delete emoji[fixedKey];
+  delete emoji[id];
+});
 
 module.exports = emoji;

@@ -9,6 +9,8 @@ const Limiter = require('./util/cooldown');
 const ranks = require('./undercardsRanks');
 const stats = require('./stats');
 const Undercards = require('./undercards/connection');
+const databaseValue = require('./util/database-value');
+const pipeIf = require('./util/pipe-if');
 
 let sendStatus;
 const templateRegex = /\$(\d+)/g;
@@ -24,6 +26,8 @@ const _INFO_ = {
   chan: process.env.CHANNEL_INFO,
   hook: process.env.WEBHOOK_INFO,
 };
+
+const _REPORTS_ = databaseValue('config/undercards/endpoints/reports');
 
 const undercards = new Undercards(process.env.LOGINBODY);
 const discord = new Eris.CommandClient(process.env.DISCORD_BOT_TOKEN, {}, {
@@ -294,7 +298,15 @@ Object.entries(endpoints)
       data.content = alertRole;
     }
 
-    post({ chan, hook }, data);
+    const _reports = _REPORTS_.value();
+    post({ chan, hook }, data)
+      .then(pipeIf(_reports && data.content === alertRole, (res) => {
+        if (_reports && res instanceof Eris.Message) { // Link to original message
+          delete data.content;
+          data.embed.author.url = `https://discord.com/channels/${res.guildID}/${res.channel.id}/${res.id}`;
+          return post(_reports, data);
+        }
+      }));
   });
 });
 // Auto messages
