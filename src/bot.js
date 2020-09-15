@@ -97,6 +97,7 @@ discord.on('messageReactionAdd', (msg, emoji, uid) => {
   firebase.database().ref(`config/undercards/emoji/${data.key.replace('.', '_')}`).set({
     id: emoji.id,
     name: emoji.name,
+    animated: emoji.animated,
   }).then(() =>
     msg.edit(`Registered <${emoji.animated?'a':''}:${emoji.name}:${emoji.id}> for \`${data.key}\``)
   ).catch(console.error);
