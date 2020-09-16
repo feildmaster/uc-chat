@@ -295,7 +295,7 @@ Object.entries(endpoints)
       },
     };
 
-    const alert = alertRole && message.toLowerCase().startsWith('@report') && reportLimits.check(user.id) === true;
+    const alert = alertRole && isReport(message) && reportLimits.check(user.id) === true;
     if (alert) {
       data.content = alertRole;
     }
@@ -346,6 +346,11 @@ process.on('exit', () => {
   discord.editStatus('invisible');
   // discord.disconnect({ reconnect: false });
 });
+
+function isReport(message) {
+  const lower = message.toLowerCase().split(' ')[0];
+  return lower === '@report';
+}
 
 module.exports = {
   undercards,
