@@ -26,6 +26,7 @@ const _INFO_ = {
   chan: process.env.CHANNEL_INFO,
   hook: process.env.WEBHOOK_INFO,
 };
+const alertRole = process.env.ALERT_ROLE;
 
 const _REPORTS_ = databaseValue('config/undercards/endpoints/reports');
 
@@ -294,17 +295,16 @@ Object.entries(endpoints)
       },
     };
 
-    const alertRole = process.env.ALERT_ROLE;
-    if (alertRole && message.toLowerCase().startsWith('@report') && reportLimits.check(user.id) === true) {
+    const alert = alertRole && message.toLowerCase().startsWith('@report') && reportLimits.check(user.id) === true;
+    if (alert) {
       data.content = alertRole;
     }
 
     const _reports = _REPORTS_.value();
     post({ chan, hook }, data)
-      .then(pipeIf(_reports && data.content === alertRole, (res) => {
-        if (_reports && res instanceof Eris.Message) { // Link to original message
-          delete data.content;
-          data.embed.author.url = `https://discord.com/channels/${res.guildID}/${res.channel.id}/${res.id}`;
+      .then(pipeIf(_reports && alert, (res) => {
+        if (res instanceof Eris.Message) { // Link to original message
+          data.content = `https://discord.com/channels/${res.guildID}/${res.channel.id}/${res.id}`;
           return post(_reports, data);
         }
       }));
