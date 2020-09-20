@@ -10,6 +10,7 @@ const ranks = require('./undercardsRanks');
 const stats = require('./stats');
 const Undercards = require('./undercards/connection');
 const databaseValue = require('./util/database-value');
+const pipe = require('./util/pipe');
 const pipeIf = require('./util/pipe-if');
 
 let sendStatus;
@@ -158,10 +159,9 @@ function post(endpoint, data) {
     delete clone.avatar_url;
     delete clone.username;
     return discord.createMessage(endpoint.chan, clone)
-    .then((res) => {
+    .then(pipe(() => {
       outgoing.increment();
-      return res;
-    })
+    }))
     .catch(() => post({ hook: endpoint.hook }, data));
   } else if (endpoint.hook) { // Fallback to webhooks
     // TODO: Hook based throttles
@@ -171,8 +171,9 @@ function post(endpoint, data) {
       delete clone.embed;
     }
     return axios.post(endpoint.hook, clone)
-      .then(() => outgoing.increment())
-      .catch((error = {}) => console.error(error.isAxiosError ? error.response : error));
+    .then(pipe(() => {
+      outgoing.increment();
+    })).catch((error = {}) => console.error(error.isAxiosError ? error.response : error));
   }
 
   return Promise.resolve(false);
