@@ -158,7 +158,10 @@ function post(endpoint, data) {
     delete clone.avatar_url;
     delete clone.username;
     return discord.createMessage(endpoint.chan, clone)
-    .then(() => outgoing.increment())
+    .then((res) => {
+      outgoing.increment();
+      return res;
+    })
     .catch(() => post({ hook: endpoint.hook }, data));
   } else if (endpoint.hook) { // Fallback to webhooks
     // TODO: Hook based throttles
