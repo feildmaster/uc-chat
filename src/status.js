@@ -10,7 +10,6 @@ const emojiURI = 'https://undercards.net/images/emotes/';
 // process.env.PROJECT_DOMAIN (https://api.glitch.com/v1/projects/by/domain?domain={PROJECT_DOMAIN})
 
 const _endpoint = {
-  hook: process.env.WEBHOOK_STATUS,
   chan: process.env.CHANNEL_STATUS,
 };
 
@@ -28,7 +27,7 @@ function sendStatus({
   extended = true,
   endpoint = _endpoint,
 } = {}) {
-  if (!(endpoint.chan || endpoint.hook) || safeExit) return Promise.resolve(false);
+  if (!endpoint.chan || safeExit) return Promise.resolve(false);
 
   safeExit = shuttingDown;
 

@@ -1,4 +1,3 @@
-const axios = require('axios');
 const Eris = require('eris');
 const chatRecord = require('./util/chat-record');
 const EMOJI = require('./discordEmoji');
@@ -25,7 +24,9 @@ const reconnection = {
 };
 const _INFO_ = {
   chan: process.env.CHANNEL_INFO,
-  hook: process.env.WEBHOOK_INFO,
+};
+const _MUTE_ = {
+  chan: process.env.CHANNEL_MUTED,
 };
 const alertRole = process.env.ALERT_ROLE;
 
@@ -45,8 +46,6 @@ const commandRequirements = {
   ],
 };
 
-let discordReady = false;
-discord.on('ready', () => discordReady = true);
 discord.on('error', (err) => console.log(err.code ? `Error: ${err.code}${err.message?`: ${err.message}`:''}` : err));
 
 const pending = new Map();
@@ -156,13 +155,11 @@ function post(endpoint, data) {
   const outgoing = stats.counters('messages').get('outgoing');
   if (endpoint.chan) {
     const clone = { ...data };
-    delete clone.avatar_url;
-    delete clone.username;
     return discord.createMessage(endpoint.chan, clone)
     .then(pipe(() => {
       outgoing.increment();
     }))
-    .catch(() => post({ hook: endpoint.hook }, data));
+    .catch(console.error);
   }
 
   return Promise.resolve(false);
@@ -176,9 +173,6 @@ function cleanString(string) {
 undercards.on('connect', () => { // Join rooms
   getSendStatus()();
 
-  Object.entries(endpoints)
-  .filter(([_, { connect } = {}]) => connect)
-  .forEach(([ room ]) => undercards.join(room));
   discord.editStatus('online');
 }).on('message/getHistory', ({room = '', history = []} = {}) => {
   history.forEach(message => chatRecord.add(message, room));
@@ -195,32 +189,21 @@ undercards.on('connect', () => { // Join rooms
     if (entries.has(key)) return;
     const endpoint = endpoints[data.room];
     const msg = `${cleanString(getMessage.decode(data.username))}#${data.userid} was muted`;
-    const baseMsg = {
-      avatar_url: 'https://undercards.net/images/souls/DETERMINATION.png',
+    const message = {
       content: msg,
     }
 
     // Mute channel
-    const _MUTE_ = {
-      chan: process.env.CHANNEL_MUTED,
-      hook: process.env.WEBHOOK_MUTED,
-    };
-    if (_MUTE_.chan || _MUTE_.hook) {
+    if (_MUTE_.chan) {
       entries.set(`muted_${data.userid}`, {
         endpoint: _MUTE_,
-        message: {
-          ...baseMsg,
-          username: `Mute log`,
-        },
+        message,
       });
     }
 
     entries.set(key, {
       endpoint,
-      message: {
-        ...baseMsg,
-        username: `${endpoint.title || data.room} chat`,
-      }
+      message,
     });
   });
 
@@ -252,12 +235,10 @@ undercards.on('connect', () => { // Join rooms
   console.log('[PM]', JSON.stringify(data));
 });
 
-if (_INFO_.chan || _INFO_.hook) {
+if (_INFO_.chan) {
   undercards.on('message/getMessageBroadcast', ({ message }) => {
     // TODO: Parse message for images
     post(_INFO_, {
-      username: 'info-chan',
-      avatar_url: 'https://undercards.net/images/souls/DETERMINATION.png',
       content: message,
     });
   });
@@ -267,14 +248,12 @@ if (_INFO_.chan || _INFO_.hook) {
 Object.entries(endpoints)
 .filter(([ _, { chan } = {} ]) => chan)
 .forEach(([ room, { chan } ]) => {
-  undercards.on(`message/getMessage/${room}`, ({ room, chatMessage }) => {
+  undercards.on(`message/getMessage/${room}`, ({ chatMessage }) => {
     chatRecord.add(chatMessage, room);
     if (!chan) return;
     const user = chatMessage.user;
     const { message, username } = getMessage(chatMessage);
     const data = {
-      username: ``,
-      avatar_url: 'https://undercards.net/images/souls/DETERMINATION.png',
       embed: {
         author: {
           name: username,
@@ -319,7 +298,7 @@ if (process.env.DEBUG === 'true') {
   function getData(data) {
     switch (data.action) {
       case '':
-      // case 'getMessage': return '';
+      case 'getMessage': return '';
       default: return JSON.stringify(data);
     }
   }
