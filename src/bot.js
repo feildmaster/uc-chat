@@ -154,7 +154,7 @@ function reconnectUC(delay = 0) {
 
 function post(endpoint, data) {
   const outgoing = stats.counters('messages').get('outgoing');
-  if (endpoint.chan && discordReady) {
+  if (endpoint.chan) {
     const clone = { ...data };
     delete clone.avatar_url;
     delete clone.username;
@@ -163,17 +163,6 @@ function post(endpoint, data) {
       outgoing.increment();
     }))
     .catch(() => post({ hook: endpoint.hook }, data));
-  } else if (endpoint.hook) { // Fallback to webhooks
-    // TODO: Hook based throttles
-    const clone = { ...data };
-    if (clone.embed) {
-      clone.embeds = [clone.embed];
-      delete clone.embed;
-    }
-    return axios.post(endpoint.hook, clone)
-    .then(pipe(() => {
-      outgoing.increment();
-    })).catch((error = {}) => console.error(error.isAxiosError ? error.response : error));
   }
 
   return Promise.resolve(false);
@@ -276,11 +265,11 @@ if (_INFO_.chan || _INFO_.hook) {
 
 // Chat rooms
 Object.entries(endpoints)
-.filter(([ _, { chan, hook } = {} ]) => chan || hook)
-.forEach(([ room, { chan, hook } ]) => {
+.filter(([ _, { chan } = {} ]) => chan)
+.forEach(([ room, { chan } ]) => {
   undercards.on(`message/getMessage/${room}`, ({ room, chatMessage }) => {
     chatRecord.add(chatMessage, room);
-    if (!chan && !hook) return;
+    if (!chan) return;
     const user = chatMessage.user;
     const { message, username } = getMessage(chatMessage);
     const data = {
@@ -305,7 +294,7 @@ Object.entries(endpoints)
     }
 
     const _reports = _REPORTS_.value();
-    post({ chan, hook }, data)
+    post({ chan }, data)
       .then(pipeIf(_reports && alert, (res) => {
         if (res instanceof Eris.Message) { // Link to original message
           data.content = `https://discord.com/channels/${res.guildID}/${res.channel.id}/${res.id}`;
@@ -316,12 +305,10 @@ Object.entries(endpoints)
 });
 // Auto messages
 Object.entries(autoTemplates)
-.filter(([ _, { chan, hook } = {} ]) => chan || hook)
-.forEach(([ type, { chan, hook, template, title } ]) => {
+.filter(([ _, { chan } = {} ]) => chan)
+.forEach(([ type, { chan, template } ]) => {
   undercards.on(`message/getMessageAuto/${type}`, (message) => {
-    post({ chan, hook }, {
-      username: `${title} webhook`,
-      avatar_url: 'https://undercards.net/images/souls/DETERMINATION.png',
+    post({ chan }, {
       content: template.replace(templateRegex, (m, key) => message.hasOwnProperty(key) ? cleanString(message[key]) : ""),
     });
   });
@@ -332,7 +319,7 @@ if (process.env.DEBUG === 'true') {
   function getData(data) {
     switch (data.action) {
       case '':
-      case 'getMessage': return '';
+      // case 'getMessage': return '';
       default: return JSON.stringify(data);
     }
   }
@@ -342,8 +329,7 @@ if (process.env.DEBUG === 'true') {
   });
 }
 
-undercards.connect();
-discord.connect();
+discord.connect().then(() => undercards.connect());
 
 process.on('exit', () => {
   undercards.disconnect();

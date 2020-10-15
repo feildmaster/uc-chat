@@ -6,6 +6,8 @@ const throttle = require('../util/throttle');
 
 const UNHANDLED_MESSAGE = 'message/unhandled';
 
+const chatNames = ["chat-discussion", "chat-strategy", "chat-beginner", "chat-tournament", "chat-roleplay", "chat-support", "chat-fr", "chat-ru", "chat-es", "chat-pt", "chat-it", "chat-de", "chat-cn", "chat-jp", "chat-tr", "chat-pl"];
+
 class Connection extends EventEmitter {
   constructor(login) {
     super();
@@ -75,7 +77,8 @@ class Connection extends EventEmitter {
           const { message } = parsedData;
           emitted |= this.emit(`${baseEvent}/${message[0]}`, message, this);
         } else if (action === 'getMessage' || action === 'getPrivateMessage') {
-          emitted |= this.emit(`${baseEvent}/${parsedData.room}`, parsedData, this);
+          const room = chatNames[parsedData.idRoom - 1] || parsedData.idRoom;
+          emitted |= this.emit(`${baseEvent}/${room}`, parsedData, this);
         }
         
         if (!emitted) {
@@ -95,13 +98,6 @@ class Connection extends EventEmitter {
   ping() {
     this._send({
       ping: 'pong',
-    });
-  }
-
-  join(room) {
-    this._send({
-      room,
-      action: 'openRoom',
     });
   }
 
