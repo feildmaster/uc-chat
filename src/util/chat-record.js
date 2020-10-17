@@ -4,7 +4,7 @@ const rooms = new Map();
 
 exports.add = ({id, user: {id: userid, username}}, room) => {
   record.set(id, {
-    room, userid, username,
+    id, room, userid, username,
   });
 
   if (!rooms.has(room)) {
@@ -20,4 +20,4 @@ exports.add = ({id, user: {id: userid, username}}, room) => {
 
 exports.get = (id) => record.get(id);
 
-exports.find = (id) => [record.values()].filter((e) => e.userid === id);
+exports.find = (id) => [...record.values()].filter((e) => e.userid === id);
