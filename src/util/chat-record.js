@@ -19,3 +19,5 @@ exports.add = ({id, user: {id: userid, username}}, room) => {
 };
 
 exports.get = (id) => record.get(id);
+
+exports.find = (id) => [record.values()].filter((e) => e.userid === id);

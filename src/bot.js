@@ -181,21 +181,17 @@ undercards.on('connect', () => { // Join rooms
 }).on('message/deleteMessages', (data) => {
   const entries = new Map();
 
-  // Done like this in case they were using multiple channels
-  data.listId.forEach((id) => {
-    const data = chatRecord.get(id);
-    if (!data) return;
-    const key = `${data.room}_${data.userid}`;
+  chatRecord.find(data.idUser).forEach((r) => {
+    const key = `${r.room}_${r.userid}`;
     if (entries.has(key)) return;
-    const endpoint = endpoints[data.room];
-    const msg = `${cleanString(getMessage.decode(data.username))}#${data.userid} was muted`;
+    const endpoint = endpoints[r.room];
     const message = {
-      content: msg,
+      content: `${cleanString(getMessage.decode(r.username))}#${r.userid} was muted`,
     }
 
     // Mute channel
     if (_MUTE_.chan) {
-      entries.set(`muted_${data.userid}`, {
+      entries.set(`muted_${r.userid}`, {
         endpoint: _MUTE_,
         message,
       });
