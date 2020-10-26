@@ -78,6 +78,7 @@ class Connection extends EventEmitter {
           emitted |= this.emit(`${baseEvent}/${message[0]}`, message, this);
         } else if (action === 'getMessage' || action === 'getPrivateMessage') {
           const room = chatNames[parsedData.idRoom - 1] || parsedData.idRoom;
+          parsedData.room = room;
           emitted |= this.emit(`${baseEvent}/${room}`, parsedData, this);
         }
         

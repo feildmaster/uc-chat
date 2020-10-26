@@ -180,6 +180,7 @@ undercards.on('connect', () => { // Join rooms
   stats.counters('messages').get('incoming').increment();
 }).on('message/deleteMessages', (data) => {
   const entries = new Map();
+  let muteMessage;
 
   chatRecord.find(data.idUser).forEach((r) => {
     const key = `${r.room}_${r.userid}`;
@@ -191,10 +192,11 @@ undercards.on('connect', () => { // Join rooms
 
     // Mute channel
     if (_MUTE_.chan) {
-      entries.set(`muted_${r.userid}`, {
+      muteMessage = {
         endpoint: _MUTE_,
-        message,
-      });
+        message: { ...message },
+      };
+      entries.set(`muted_${r.userid}`, muteMessage);
     }
 
     entries.set(key, {
@@ -202,6 +204,13 @@ undercards.on('connect', () => { // Join rooms
       message,
     });
   });
+
+  if (muteMessage) {
+    muteMessage.message.content += ` (${[...entries.keys()]
+      .filter((key = '') => !key.startsWith('muted_'))
+      .map((key = '') => key.substring(0, key.lastIndexOf('_')))
+      .join(', ')})`;
+  }
 
   for (const { endpoint, message } of entries.values()) {
     post(endpoint, message);
