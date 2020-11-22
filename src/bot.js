@@ -281,7 +281,10 @@ Object.entries(endpoints)
     post({ chan }, data)
       .then(pipeIf(_reports && alert, (res) => {
         if (res instanceof Eris.Message) { // Link to original message
-          data.content = `https://discord.com/channels/${res.guildID}/${res.channel.id}/${res.id}`;
+          data.message_reference = {
+            message_id: res.id,
+            channel_id: res.channel.id,
+          };
           return post(_reports, data);
         }
       }));
