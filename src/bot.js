@@ -265,7 +265,7 @@ Object.entries(endpoints)
           icon_url: 'https://undercards.net/images/avatars/' + user.avatar.image + '.' + (user.avatar.extension || 'png')
         },
         description: message,
-        color: parseInt(ranks[user.mainGroup.priority] || ranks[10], 16),
+        color: ranks[user.mainGroup.name] || ranks.User,
         footer: {
           text: `ID:${user.id}, LV:${user.level}(${user.division.replace('_', ' ')})`,
         },
