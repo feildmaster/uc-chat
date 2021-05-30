@@ -19,33 +19,43 @@ exports.endpoints = {
   },
   'chat-fr': {
     chan: process.env.CHANNEL_FR,
+    lang: 'fr',
   },
   'chat-ru': {
     chan: process.env.CHANNEL_RU,
+    lang: 'ru',
   },
   'chat-es': {
     chan: process.env.CHANNEL_ES,
+    lang: 'es',
   },
   'chat-pt': {
     chan: process.env.CHANNEL_PT,
+    lang: 'pt',
   },
   'chat-it': {
     chan: process.env.CHANNEL_IT,
+    lang: 'it',
   },
   'chat-de': {
     chan: process.env.CHANNEL_DE,
+    lang: 'de',
   },
   'chat-cn': {
     chan: process.env.CHANNEL_CN,
+    lang: 'zh-cn',
   },
   'chat-jp': {
     chan: process.env.CHANNEL_JP,
+    lang: 'ja',
   },
   'chat-tr': {
     chan: process.env.CHANNEL_TR,
+    lang: 'tr',
   },
   'chat-pl': {
     chan: process.env.CHANNEL_PL,
+    lang: 'pl',
   },
 };
 
