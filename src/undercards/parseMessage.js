@@ -1,4 +1,4 @@
-const simpleParse = ['chatMessage', 'history', 'me', 'friends', 'listId'];
+const simpleParse = ['chatMessage', 'discussionHistory', 'otherHistory', 'me', 'friends', 'listId'];
 
 function parser(key, value) {
   if (simpleParse.includes(key)) {
