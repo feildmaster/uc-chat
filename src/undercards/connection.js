@@ -102,38 +102,28 @@ class Connection extends EventEmitter {
     });
   }
 
-  joinPrivate(user) {
-    const idUser = user.idUser || user.userid;
-    if (!idUser || !user.username) return;
-    this._send({
-      action: 'openPrivateRoom',
-      idUser,
-      friendName: user.usernameSafe || user.username
-    });
-  }
-
-  message(message, room) {
-    this._throttledMessage({
-      action: 'message',
-      message,
-      room,
-    });
+  message(message, idRoom) {
+    this._sendMessage({ message, idRoom });
   }
 
   privateMessage(message, user) {
-    this._throttledMessage({
-      action: 'privateMessage',
+    // idUser (UC internal), userid (bot internal), raw (just to support it)
+    const idFriend = user.idUser || user.id || user.userid || user;
+    this._sendMessage({ message, idFriend });
+  }
+
+  _sendMessage({ message = '', idRoom = '0', idFriend = '0' }) {
+    if (!message || (idRoom === '0' && idFriend === '0')) return;
+    this._throttledMessage({ 
+      action: 'message',
       message,
-      // idUser (UC internal), userid (bot internal), raw (just to support it)
-      idUser: user.idUser || user.id ||user.userid || user,
+      idRoom: `${idRoom}`,
+      idFriend: `${idFriend}`,
     });
   }
 
   _throttledMessage(data) {
-    this._throttle.queue(() => {
-      console.log('Sending:', new Date());
-      this._send(data)
-    });
+    this._throttle.queue(() => this._send(data));
   }
 
   _send(data) {
