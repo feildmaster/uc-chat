@@ -76,4 +76,8 @@ exports.autoTemplates = {
     chan: process.env.CHANNEL_WS,
     template: `$1 has just stopped $2's $3 game winning streak!`,
   },
+  'chat-new-legend': {
+    chan: process.env.CHANNEL_LEADERBOARD,
+    template: '$1 has just reached LEGEND division!',
+  },
 };
