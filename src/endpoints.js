@@ -57,6 +57,9 @@ exports.endpoints = {
     chan: process.env.CHANNEL_PL,
     lang: 'pl',
   },
+  0: {
+    chan: process.env.CHANNEL_VOID,
+  },
 };
 
 exports.autoTemplates = {

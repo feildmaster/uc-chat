@@ -81,7 +81,7 @@ class Connection extends EventEmitter {
           parsedData.room = room;
           emitted |= this.emit(`${baseEvent}/${room}`, parsedData, this);
         }
-        
+
         if (!emitted) {
           this.emit(UNHANDLED_MESSAGE, parsedData, this);
         }
@@ -95,7 +95,7 @@ class Connection extends EventEmitter {
   disconnect() {
     if (this.connected) this._ws.close();
   }
-  
+
   ping() {
     this._send({
       ping: 'pong',
@@ -112,9 +112,9 @@ class Connection extends EventEmitter {
     this._sendMessage({ message, idFriend });
   }
 
-  _sendMessage({ message = '', idRoom = '0', idFriend = '0' }) {
-    if (!message || (idRoom === '0' && idFriend === '0')) return;
-    this._throttledMessage({ 
+  _sendMessage({ message = '', idRoom = '-1', idFriend = '0' }) {
+    if (!message || (idRoom === '-1' && idFriend === '0')) return;
+    this._throttledMessage({
       action: 'message',
       message,
       idRoom: `${idRoom}`,

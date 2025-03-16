@@ -51,10 +51,10 @@ discord.on('error', (err) => console.log(err.code ? `Error: ${err.code}${err.mes
 const pending = new Map();
 discord.registerCommand('emotes', (msg, args) => {
   const run = !!args.length;
-  const tempKey = args[0] || '';  
+  const tempKey = args[0] || '';
   const url = tempKey.lastIndexOf('/') + 1;
   const key = url ? tempKey.substring(url) : tempKey;
-  
+
   if (run && key.lastIndexOf('.') === -1) return 'Missing emote extension';
 
   if (run) {
